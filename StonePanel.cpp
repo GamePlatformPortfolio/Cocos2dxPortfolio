@@ -42,7 +42,7 @@ void Stone::setStoneColor(StoneType value)
 	switch (type)
 	{
 	case StoneType::Null :
-		sprite->setColor(cocos2d::Color3B::BLACK);
+		sprite->setColor(cocos2d::Color3B::GREEN);
 		break;
 	case StoneType::Attack:
 		sprite->setColor(cocos2d::Color3B::RED);
@@ -57,6 +57,12 @@ void Stone::Init(std::string fileName, cocos2d::Rect rect, cocos2d::Vec2 positio
 {
 	sprite = cocos2d::Sprite::create(fileName, rect);
 	sprite->setPosition(position);
+
+	power = rand() % 5;
+	powerLabal = cocos2d::Label::createWithSystemFont(std::to_string(power), "", 30);
+	powerLabal->setColor(cocos2d::Color3B::BLACK);
+	powerLabal->setPosition(cocos2d::Vec2(sprite->getContentSize().width / 2, sprite->getContentSize().height / 2));
+	sprite->addChild(powerLabal);	
 }
 
 // StonePanel 

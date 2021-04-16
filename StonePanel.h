@@ -14,6 +14,7 @@ private:
 	int power = 0;
 public:
 	cocos2d::Sprite* sprite;
+	cocos2d::Label* powerLabal;
 
 	bool getIsSelected(); 
 	void setIsSelected(bool value); // change stone color when stone is selected.
@@ -36,7 +37,6 @@ private:
 public:
 	cocos2d::Sprite* sprite;
 	std::list<Stone*> selectedStones;
-	std::list<Stone*>::iterator it;
 
 	cocos2d::Sprite* battleButton;
 
