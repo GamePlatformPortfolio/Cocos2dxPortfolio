@@ -30,6 +30,8 @@
 #include "cocos2d.h"
 #include "proj.win32/StonePanel.h"
 
+enum GameMode { Choose, Battle };
+
 class HelloWorld : public cocos2d::Scene
 {
 public:
@@ -37,10 +39,15 @@ public:
     virtual bool init();    
     CREATE_FUNC(HelloWorld);
 
-    StonePanel* stonePanel;
-    StonePanel* enemyStonePanel;
+    StonePanel* playerPanel;
+    StonePanel* enemyPanel;
+
+    cocos2d::Sprite* player;
+    cocos2d::Sprite* enemy;
 
     cocos2d::EventListenerTouchOneByOne* listener;
+
+    void InitForBattle();
 
     void onEnter();
     void onExit();
@@ -49,9 +56,30 @@ public:
 
     void update(float delta);
 
-    void doAction();
-    void doBattleAction();
-    void doNormalAction();
+    void doBattle(int battlePhase);
+    void doNext();
+    void doChoose();
+
+    GameMode mode = GameMode::Choose;
+
+    int width, height;
+
+    int battlePhase = 0;
+
+    Stone* getCurrentStone(StonePanel* panel, int value);
+
+    void CompareStone(Stone* player, Stone* enemy);
+
+    void ShowStone(Stone* stone, bool value);
+
+    void TurnToChoose();
+
+    // 터치 인식과 관련된 함수
+    void CheckStonesTouch(cocos2d::Vec2 touchPoint);
+    void CheckBattleButtonTouch(cocos2d::Vec2 touchPoint);
+
+    void Attack(cocos2d::Sprite* character, float time);
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__
