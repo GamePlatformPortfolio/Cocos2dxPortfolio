@@ -1,8 +1,23 @@
 #include "Stone.h"
+#include "StoneTier.h"
+#include "StoneType.h"
 
-Stone::Stone(string fileName, Vec2 spawnPos, int size, int power)
+Stone::Stone(StoneType getType, StoneTier getTier, Vec2 spawnPos, int size, int power)
 {
-	sprite = Sprite::create("Images/" + fileName);
+	string filename = "Stn_";
+	//----------------------스톤 타입(물공, 마공, 방어, 회피)
+	if		(getType == StoneType::PhysicalAttack)	filename += StringUtils::format("PA_");
+	else if (getType == StoneType::MagicAttack)		filename += StringUtils::format("MA_");
+	else if (getType == StoneType::Guard)			filename += StringUtils::format("GD_");
+	else if (getType == StoneType::Dodge)			filename += StringUtils::format("DG_");
+	//----------------------스톤 등급(Normal, Rare, Unique, Epic)
+	if (getTier == StoneTier::Normal)			filename += StringUtils::format("N.png");
+	else if (getTier == StoneTier::Rare)		filename += StringUtils::format("R.png");
+	else if (getTier == StoneTier::Unique)		filename += StringUtils::format("U.png");
+	else if (getTier == StoneTier::Epic)		filename += StringUtils::format("E.png");
+	//------------최종 결과물 예시 : "Stn_PA_N.png"
+	sprite = Sprite::create(filename);
+
 	sprite->setContentSize(Size(size, size));
 	sprite->setPosition(spawnPos);
 
@@ -11,7 +26,7 @@ Stone::Stone(string fileName, Vec2 spawnPos, int size, int power)
 
 	this->power = power;
 	powerFontSize = 24;
-	powerShowTime = 0.5f;
+	powerShowTime = 0.2f;
 	isSelect = false;
 	horizon = spawnPos.x;
 

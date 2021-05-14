@@ -1,5 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -22,16 +24,17 @@ bool HelloWorld::init()
     }
 
     scheduleUpdate();
-
+    AudioEngine::play2d("BGM.mp3", true, 0.1f);
     auto screenSize = Director::getInstance()->getVisibleSize();
 
     canSelect = true;
 
     string bgFileName = "Background.png";
-    bgSprite = Sprite::create("Images/" + bgFileName);
+    bgSprite = Sprite::create(bgFileName);//"Images/" + 
     bgSprite->setContentSize(screenSize);
     bgSprite->setPosition(screenSize / 2);
     this->addChild(bgSprite);
+
 
     pMenuItem1 = MenuItemFont::create("Battle", CC_CALLBACK_1(HelloWorld::StartBattle, this));
     pMenuItem1->setColor(Color3B::BLACK);
@@ -203,7 +206,7 @@ void HelloWorld::StartBattle(Ref* pSender)
         compareStone, DelayTime::create(2.0f),
         hideCurStone, DelayTime::create(1.0f),
         showCurStone, DelayTime::create(1.0f),
-        compareStone, DelayTime::create(2.0f),
+        compareStone, DelayTime::create(1.0f),
         hideCurStone, DelayTime::create(1.0f),
         showCurStone, DelayTime::create(1.0f),
         compareStone, DelayTime::create(2.0f),
@@ -223,6 +226,7 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
     if (calculatedDamage > 0)
     {
         player->Attack();
+        AudioEngine::play2d("Craver_MA.mp3", false, 0.1f);
         enemy ->Damaged(calculatedDamage);
         return;
     }
