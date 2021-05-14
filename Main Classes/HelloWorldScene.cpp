@@ -1,6 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
+#include <random>
 using namespace cocos2d::experimental;
 
 USING_NS_CC;
@@ -26,7 +27,7 @@ bool HelloWorld::init()
     scheduleUpdate();
     AudioEngine::play2d("BGM.mp3", true, 0.1f);
     auto screenSize = Director::getInstance()->getVisibleSize();
-
+    srand((unsigned int)time(NULL));
     canSelect = true;
 
     string bgFileName = "Background.png";
@@ -34,7 +35,6 @@ bool HelloWorld::init()
     bgSprite->setContentSize(screenSize);
     bgSprite->setPosition(screenSize / 2);
     this->addChild(bgSprite);
-
 
     pMenuItem1 = MenuItemFont::create("Battle", CC_CALLBACK_1(HelloWorld::StartBattle, this));
     pMenuItem1->setColor(Color3B::BLACK);

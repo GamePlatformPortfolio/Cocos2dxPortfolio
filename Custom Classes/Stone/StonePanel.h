@@ -28,6 +28,7 @@ public:
 	void			InitStones(Size size);
 	StoneType		GetRandomType();
 	StoneTier		GetRandomTier();
+	int GetRanValueInRange(int front, int rear);
 
 	void			SelectStone(int index);
 	void			UnSelectedStone(int index);
