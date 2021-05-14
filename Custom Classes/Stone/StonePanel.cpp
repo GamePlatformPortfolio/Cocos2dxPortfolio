@@ -42,8 +42,7 @@ void StonePanel::InitStones(Size size)
 			GetRandomType(),
 			GetRandomTier(),
 			Vec2(dividedWidth * (i + 1), dividedHeight),
-			45,
-			rand() % 10
+			50
 		);
 		panelSprite->addChild(allStones[i]->sprite);
 	}
@@ -217,7 +216,8 @@ void StonePanel::EndBattle()
 }
 
 StoneType StonePanel::GetRandomType() {
-	switch (rand() % 4) {
+	//srand(time(NULL));
+	switch (GetRanValueInRange(0,3)) {
 	case 0: return StoneType::PhysicalAttack;
 	case 1: return StoneType::MagicAttack;
 	case 2: return StoneType::Guard;
@@ -226,10 +226,19 @@ StoneType StonePanel::GetRandomType() {
 }
 
 StoneTier StonePanel::GetRandomTier() {
-	switch (rand() % 4) {
+	//srand(time(NULL));
+	switch (GetRanValueInRange(0, 3)) {
 	case 0: return StoneTier::Normal;
 	case 1: return StoneTier::Rare;
 	case 2: return StoneTier::Unique;
 	case 3: return StoneTier::Epic;
 	}
+}
+
+int StonePanel::GetRanValueInRange(int front, int rear) {
+	//return (rand() % (rear - front + 1)) + front;
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<int> dis(front, rear);
+	return dis(gen);
 }
