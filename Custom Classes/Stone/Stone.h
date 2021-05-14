@@ -1,6 +1,7 @@
 #pragma once
-
 #include "cocos2d.h"
+#include "StoneTier.h"
+#include "StoneType.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -13,7 +14,7 @@ public:
 	Color3B color;
 	Color3B selectedColor;
 
-	Stone(string fileName, Vec2 spawnPos, int size, int power);
+	Stone(StoneType getType, StoneTier getTier, Vec2 spawnPos, int size, int power);
 	~Stone();
 
 	void	ChangeState();

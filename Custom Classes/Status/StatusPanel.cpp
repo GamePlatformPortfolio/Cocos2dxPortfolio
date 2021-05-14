@@ -4,7 +4,7 @@ StatusPanel::StatusPanel(string bgFileName, string hpFileName,
 	Character* character, Size size, Vec2 distance, int hp)
 {
 	//-----[상태바 생성 및 초기화]
-	background = Sprite::create("Images/" + bgFileName);
+	background = Sprite::create(bgFileName); //"Images/" +
 	background->setContentSize(size);
 
 	target = character;

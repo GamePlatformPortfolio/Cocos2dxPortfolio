@@ -26,6 +26,8 @@ public:
 	~StonePanel();
 
 	void			InitStones(Size size);
+	StoneType		GetRandomType();
+	StoneTier		GetRandomTier();
 
 	void			SelectStone(int index);
 	void			UnSelectedStone(int index);

@@ -1,4 +1,6 @@
 #include "StonePanel.h"
+#include "StoneType.h"
+#include "StoneTier.h"
 
 StonePanel::StonePanel(CharacterType target, string fileName, Vec2 spawnPos, Size size)
 {
@@ -6,7 +8,7 @@ StonePanel::StonePanel(CharacterType target, string fileName, Vec2 spawnPos, Siz
 
 	currentStone = nullptr;
 
-	panelSprite = Sprite::create("Images/" + fileName);
+	panelSprite = Sprite::create(fileName); //"Images/" +
 	panelSprite->setPosition(spawnPos);
 	panelSprite->setContentSize(size);
 
@@ -37,13 +39,15 @@ void StonePanel::InitStones(Size size)
 	{
 		allStones[i] = new Stone
 		(
-			"Stone.png",
+			GetRandomType(),
+			GetRandomTier(),
 			Vec2(dividedWidth * (i + 1), dividedHeight),
-			30,
+			45,
 			rand() % 10
 		);
 		panelSprite->addChild(allStones[i]->sprite);
 	}
+
 	selectedStones.clear();
 }
 
@@ -170,7 +174,7 @@ void StonePanel::HideCurrentStone()
 				);
 			});
 
-		auto hideSeq = Sequence::create(hide, DelayTime::create(0.5f), goToOriginPos, nullptr);
+		auto hideSeq = Sequence::create(hide, DelayTime::create(0.2f), goToOriginPos, nullptr);
 
 
 		currentStone->sprite->runAction(hideSeq);
@@ -210,4 +214,22 @@ void StonePanel::EndBattle()
 	}
 
 	isFirst = true;
+}
+
+StoneType StonePanel::GetRandomType() {
+	switch (rand() % 4) {
+	case 0: return StoneType::PhysicalAttack;
+	case 1: return StoneType::MagicAttack;
+	case 2: return StoneType::Guard;
+	case 3: return StoneType::Dodge;
+	}
+}
+
+StoneTier StonePanel::GetRandomTier() {
+	switch (rand() % 4) {
+	case 0: return StoneTier::Normal;
+	case 1: return StoneTier::Rare;
+	case 2: return StoneTier::Unique;
+	case 3: return StoneTier::Epic;
+	}
 }
