@@ -1,5 +1,8 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
+#include <random>
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -22,13 +25,13 @@ bool HelloWorld::init()
     }
 
     scheduleUpdate();
-
+    AudioEngine::play2d("BGM.mp3", true, 0.1f);
     auto screenSize = Director::getInstance()->getVisibleSize();
-
+    srand((unsigned int)time(NULL));
     canSelect = true;
 
     string bgFileName = "Background.png";
-    bgSprite = Sprite::create("Images/" + bgFileName);
+    bgSprite = Sprite::create(bgFileName);//"Images/" + 
     bgSprite->setContentSize(screenSize);
     bgSprite->setPosition(screenSize / 2);
     this->addChild(bgSprite);
@@ -104,16 +107,16 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 
     bool bTouch = false;
         
-    for (int i = 0; i < maxStoneCount; i++)
+    for (int i = 0; i < handAmount; i++)
     {
-        bTouch = playerStone->allStones[i]->sprite->getBoundingBox().containsPoint(touchPoint);
+        bTouch = playerStone->handStones[i]->sprite->getBoundingBox().containsPoint(touchPoint);
         if (bTouch)
         {
-            if (playerStone->allStones[i]->GetSelect())
+            if (playerStone->handStones[i]->GetSelect())
             {
                 playerStone->UnSelectedStone(i);
             }
-            else if (playerStone->allStones[i]->GetSelect() == false && canSelect)
+            else if (playerStone->handStones[i]->GetSelect() == false && canSelect)
             {
                 playerStone->SelectStone(i);
             }
@@ -154,7 +157,6 @@ void HelloWorld::update(float dt)
     if (playerStatus->target != nullptr )
     {
         playerStatus->UpdateHpBar();
-
     }
 }
 
@@ -197,13 +199,15 @@ void HelloWorld::StartBattle(Ref* pSender)
             canSelect = true;
         });
 
+#pragma region Final Sequence
+
     auto battleSeq = Sequence::create(
         hide, DelayTime::create(0.5f),
         showCurStone, DelayTime::create(1.0f),
         compareStone, DelayTime::create(2.0f),
         hideCurStone, DelayTime::create(1.0f),
         showCurStone, DelayTime::create(1.0f),
-        compareStone, DelayTime::create(2.0f),
+        compareStone, DelayTime::create(1.0f),
         hideCurStone, DelayTime::create(1.0f),
         showCurStone, DelayTime::create(1.0f),
         compareStone, DelayTime::create(2.0f),
@@ -212,8 +216,9 @@ void HelloWorld::StartBattle(Ref* pSender)
         end, DelayTime::create(0.5f),
         nullptr);
 
-    this->runAction(battleSeq);
-    
+#pragma endregion
+
+    this->runAction(battleSeq);    
 }
 
 void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
@@ -223,6 +228,7 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
     if (calculatedDamage > 0)
     {
         player->Attack();
+        AudioEngine::play2d("Craver_MA.mp3", false, 0.1f);
         enemy ->Damaged(calculatedDamage);
         return;
     }

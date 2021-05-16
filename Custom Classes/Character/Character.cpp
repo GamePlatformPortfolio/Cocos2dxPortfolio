@@ -2,7 +2,7 @@
 
 Character::Character(CharacterType type, string fileName, Vec2 pos, Size size)
 {
-    sprite = cocos2d::Sprite::create("Images/" + fileName);
+    sprite = cocos2d::Sprite::create(fileName);//"Images/" + 
     sprite->setPosition(pos);
     sprite->setContentSize(size);
 
@@ -20,7 +20,7 @@ Character::Character(CharacterType type, string fileName, Vec2 pos, Size size)
         break;
     }
 
-    defaultTime = 0.5f;
+    defaultTime = 0.2f;
 
     maxHp = 10;
     currentHp = maxHp;
@@ -58,7 +58,7 @@ void Character::Attack()
     auto frontMove = MoveTo::create(defaultTime, originPos + movingRange);
     auto comebackMove = MoveTo::create(defaultTime, originPos);
 
-    auto moveSeq = Sequence::create(frontMove, comebackMove, nullptr);
+    auto moveSeq = Sequence::create(frontMove, DelayTime::create(0.2f), comebackMove, nullptr);
 
     sprite->runAction(moveSeq);
 }
