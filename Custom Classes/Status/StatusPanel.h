@@ -13,7 +13,8 @@ class StatusPanel
 {
 public:
     Sprite*         background;
-    LoadingBar*         hpBar;
+    //LoadingBar*         hpBar;
+    Sprite*         hpBar;
 
     StatusPanel(string bgFileName, string hpFileName,
         Character* character, Size size, Vec2 distance, int hp);

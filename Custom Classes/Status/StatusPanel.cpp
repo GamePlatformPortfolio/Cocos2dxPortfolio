@@ -6,24 +6,22 @@ StatusPanel::StatusPanel(string bgFileName, string hpFileName,
 	//-----[상태바 생성 및 초기화]
 	background = Sprite::create(bgFileName); //"Images/" +
 	background->setContentSize(size);
-
-	target = character;
-
-
-	// 상태바를 캐릭터에 붙힌다.
-	AttachToCharacter(distance);
-
 	background->setColor(Color3B::GRAY);
-
-	//-----
+	target = character;
+	AttachToCharacter(distance);			// 상태바를 캐릭터에 붙힌다.
 
 
 
 	maxHp = target->GetMaxHp();
 	currentHp = maxHp;
+	hpBar = Sprite::create(hpFileName);
+	background->addChild(hpBar);
+	hpBar->setContentSize(Size(size.width, 50));
+	hpBar->setPosition(Vec2(15, 75));
 
 	bgSize = background->getContentSize();
 
+#pragma region LoadingHPBar
 	//-----[hp바 생성 및 초기화]
 	//hpBar = LoadingBar::create("Images/" + hpFileName);
 	//hpBar->setDirection(LoadingBar::Direction::LEFT);
@@ -38,8 +36,7 @@ StatusPanel::StatusPanel(string bgFileName, string hpFileName,
 	//UpdateHpBar(); // 현재 체력에 따라 hp바 게이지 조절
 
 	//-----
-
-
+#pragma endregion
 }
 
 StatusPanel::~StatusPanel()
@@ -68,8 +65,9 @@ void StatusPanel::UpdateHpBar()
 	currentHp = target->GetCurrentHp();
 
 	float hpRatio = 100;
+	hpBar->setTextureRect(Rect(0, 0, 100, 200 * ((maxHp - currentHp) / 100)));
 
-	//hpBar->setPercent(hpRatio);
+	//    ->setPercent(hpRatio);
 }
 
 void StatusPanel::AttachToCharacter(Vec2 distance)
