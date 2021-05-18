@@ -72,7 +72,7 @@ bool HelloWorld::init()
     this->addChild(player->GetSprite());
     this->addChild(enemy ->GetSprite());
 
-    playerStatus = new StatusPanel("StatusBG.png", "StatusHP.png", player, Size(30, 100),
+    playerStatus = new StatusPanel("Crv_Bar.png", "Crv_Hp.png", player, Size(30, 100),
         Vec2(50, 0), 100);
 
     return true;
@@ -154,11 +154,10 @@ void HelloWorld::update(float dt)
         pMenu->setVisible(false);
     }
 
-    if (playerStatus->target != nullptr )
-    {
-        playerStatus->UpdateHpBar();
-
-    }
+    //if (playerStatus->target != nullptr )
+    //{
+    //    playerStatus->UpdateHpBar();
+    //}
 }
 
 void HelloWorld::StartBattle(Ref* pSender)
@@ -225,19 +224,19 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
 
     if (calculatedDamage > 0)
     {
-        player->Attack();
-        AudioEngine::play2d("Craver_MA.mp3", false, 0.1f);
+        player->Attack(playerStone);
         enemy ->Damaged(calculatedDamage);
         return;
     }
     else if (calculatedDamage < 0)
     {
-        enemy ->Attack();
+        enemy ->Attack(enemyStone);
         player->Damaged(-calculatedDamage);
         return;
     }
     else
     {
+        //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
         return;
     }
 }

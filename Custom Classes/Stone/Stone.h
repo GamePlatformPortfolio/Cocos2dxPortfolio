@@ -36,6 +36,7 @@ public:
 	void	HidePowerLanel();
 
 	float	GetHorizon();
+	StoneType GetType() { return type; }
 	int		GetRanValueInRange(int, int);
 private:
 	StoneType type;
