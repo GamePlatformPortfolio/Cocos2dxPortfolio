@@ -33,6 +33,7 @@ public:
 	~StonePanel();
 
 	void			InitStones(cocos2d::Size size);
+
 	StoneType		GetRandomType();
 	StoneTier		GetRandomTier();
 	int GetRanValueInRange(int front, int rear);

@@ -7,6 +7,7 @@ StonePanel::StonePanel(CharacterType target, string fileName, Vec2 spawnPos, Siz
 	currentStone = nullptr;
 
 	panelSprite = Sprite::create(fileName);
+
 	panelSprite->setPosition(spawnPos);
 	panelSprite->setContentSize(size);
 
@@ -25,10 +26,10 @@ StonePanel::~StonePanel()
 
 void StonePanel::InitStones(Size size)
 {
-	const int hOffset = size.width / (handAmount + 1); // handAmount + 1·Î ³ª´²¾ß handStonesÀ»(¸¦) ´ëÄªÀ¸·Î ¹èÄ¡°¡´É
+	const int hOffset = size.width / (handAmount + 1); // handAmount + 1ë¡œ ë‚˜ëˆ ì•¼ handStonesì„(ë¥¼) ëŒ€ì¹­ìœ¼ë¡œ ë°°ì¹˜ê°€ëŠ¥
 	const int vOffset = size.height / 2;
 
-	// allStones¿¡ ¿ø¼Ò ³Ö±â
+	// allStonesì— ì›ì†Œ ë„£ê¸°
 	for (int i = 0; i < maxAmount; i++)
 	{
 		allStones.push_back(new Stone
@@ -40,18 +41,17 @@ void StonePanel::InitStones(Size size)
 		));
 		allStones[i]->sprite->setVisible(false);
 		panelSprite->addChild(allStones[i]->sprite);
-	}
+  }
 
-	// selectedStones ºñ¿ì±â
 	selectedStones.clear();
 	handStones.clear();
 
-	// handStones¿¡ ¿ø¼Ò ³Ö±â
+	// handStonesì— ì›ì†Œ ë„£ê¸°
 	for (int i = 0; i < handAmount; i++)
 	{
 		handStones.push_back(allStones[i]);
 		handStones[i]->sprite->setVisible(true);
-		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 ºÎÅÍ ½ÃÀÛÇØ¾ß ÇÔ
+		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 ë¶€í„° ì‹œì‘í•´ì•¼ í•¨
 	}	
 }
 
@@ -66,7 +66,7 @@ void StonePanel::UnSelectedStone(int index)
 {
 	Stone* target = handStones[index];
 
-	// ¹İº¹ÀÚ¸¦ ÅëÇÑ Å½»ö. ÇöÀç Å¬¸¯ÇÑ ½ºÅæÀÌ ÀÌ¹Ì ¼±ÅÃµÇ¾ú´ÂÁö È®ÀÎÇÕ´Ï´Ù.
+	// ë°˜ë³µìë¥¼ í†µí•œ íƒìƒ‰. í˜„ì¬ í´ë¦­í•œ ìŠ¤í†¤ì´ ì´ë¯¸ ì„ íƒë˜ì—ˆëŠ”ì§€ í™•ì¸í•©ë‹ˆë‹¤.
 	it = find(selectedStones.begin(), selectedStones.end(), target);
 	if (it != selectedStones.end())
 	{
@@ -80,10 +80,10 @@ void StonePanel::HideAll()
 {
 	auto fadeOut = FadeOut::create(panelShowTime);
 
-	// ÆĞ³ÎÀ» ¼û±é´Ï´Ù.
+	// íŒ¨ë„ì„ ìˆ¨ê¹ë‹ˆë‹¤.
 	panelSprite->runAction(fadeOut->clone());
 
-	// ¼Õ¿¡ µç ¸ğµç ½ºÅæÀ» ¼û±é´Ï´Ù.
+	// ì†ì— ë“  ëª¨ë“  ìŠ¤í†¤ì„ ìˆ¨ê¹ë‹ˆë‹¤.
 	for (Stone* stone : handStones)
 	{
 		stone->Hide();
@@ -94,7 +94,7 @@ void StonePanel::ShowAll()
 {
 	auto fadeIn = FadeIn::create(panelShowTime);
 
-	// ÆĞ³ÎÀ» º¸ÀÔ´Ï´Ù.
+	// íŒ¨ë„ì„ ë³´ì…ë‹ˆë‹¤.
 	panelSprite->runAction(fadeIn->clone());
 
 	const int hOffset = panelSprite->getContentSize().width / (handAmount + 1);
@@ -103,13 +103,13 @@ void StonePanel::ShowAll()
 	selectedStones.clear();
 	handStones.clear();
 
-	// ¼Õ¿¡ µç ¸ğµç ½ºÅæÀ» º¸ÀÔ´Ï´Ù.
+	// ì†ì— ë“  ëª¨ë“  ìŠ¤í†¤ì„ ë³´ì…ë‹ˆë‹¤.
 	for (int i = 0; i < handAmount; i++)
 	{
 		allStones[i]->Show();
 		handStones.push_back(allStones[i]);
 
-		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 ºÎÅÍ ½ÃÀÛÇØ¾ß ÇÔ
+		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 ë¶€í„° ì‹œì‘í•´ì•¼ í•¨
 
 		
 	
@@ -153,20 +153,20 @@ Stone* StonePanel::PopStone()
 
 void StonePanel::ShowCurrentStone()
 {
-	// »ó´ë¹æÀÇ ÆĞ³ÎÀÌ¸é ·£´ıÇÑ ½ºÅæÀ» ¼±ÅÃÇÕ´Ï´Ù.
+	// ìƒëŒ€ë°©ì˜ íŒ¨ë„ì´ë©´ ëœë¤í•œ ìŠ¤í†¤ì„ ì„ íƒí•©ë‹ˆë‹¤.
 	if (target == CharacterType::Enemy && isFirst)
 	{
 		PushRandomStones();
 		isFirst = false;
 	}
 
-	// ½ºÅæµéÀÇ »óÅÂ´Â º¯°æÇÏÁö ¾Ê°í »ö¸¸ ¹Ù²ß´Ï´Ù.
+	// ìŠ¤í†¤ë“¤ì˜ ìƒíƒœëŠ” ë³€ê²½í•˜ì§€ ì•Šê³  ìƒ‰ë§Œ ë°”ê¿‰ë‹ˆë‹¤.
 	for (Stone* stone : handStones)
 	{
 		stone->ChangeOnlyColor();
 	}
 
-	// ¼±ÅÃµÈ ½ºÅæµé Áß ¸Ç ¾Õ ½ºÅæÀ» ÃßÃâÇÕ´Ï´Ù.
+	// ì„ íƒëœ ìŠ¤í†¤ë“¤ ì¤‘ ë§¨ ì• ìŠ¤í†¤ì„ ì¶”ì¶œí•©ë‹ˆë‹¤.
 	currentStone = PopStone();
 
 	if (currentStone == nullptr)
@@ -177,14 +177,14 @@ void StonePanel::ShowCurrentStone()
 
 	Vec2 targetPos = Vec2(panelSprite->getContentSize().width / 2, panelSprite->getContentSize().height / 2);
 
-	// ÆĞ³ÎÀÇ Áß¾ÓÀ¸·Î ÀÌµ¿½ÃÅ² ÈÄ¿¡ Ç¥½ÃÇÕ´Ï´Ù.
+	// íŒ¨ë„ì˜ ì¤‘ì•™ìœ¼ë¡œ ì´ë™ì‹œí‚¨ í›„ì— í‘œì‹œí•©ë‹ˆë‹¤.
 	currentStone->sprite->setPosition(targetPos);
 	currentStone->Show();
 }
 
 void StonePanel::HideCurrentStone()
 {
-	// CurrentStoneÀº selectedStones¿¡¼­ popµÈ »óÅÂ...hand¿Í all¿¡¼­ ¾ø¾Ö¾ß ÇÕ´Ï´Ù.
+	// CurrentStoneì€ selectedStonesì—ì„œ popëœ ìƒíƒœ...handì™€ allì—ì„œ ì—†ì• ì•¼ í•©ë‹ˆë‹¤.
 
 	if (currentStone != nullptr)
 	{
@@ -198,11 +198,13 @@ void StonePanel::HideCurrentStone()
 				it = find(allStones.begin(), allStones.end(), currentStone);
 				if (it != allStones.end())
 				{
-					allStones.erase(it); // ¸ÕÀú allStones¿¡¼­ Á¦°ÅÇÕ´Ï´Ù.
+					allStones.erase(it); // ë¨¼ì € allStonesì—ì„œ ì œê±°í•©ë‹ˆë‹¤.
+
 
 					allStones.push_back(currentStone);
 				}
 			});
+
 
 		auto hideSeq = Sequence::create(hide, DelayTime::create(0.2f), moveToLast, nullptr);
 

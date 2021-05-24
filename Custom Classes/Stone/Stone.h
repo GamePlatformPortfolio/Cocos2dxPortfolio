@@ -3,7 +3,6 @@
 #include "StoneTier.h"
 #include "StoneType.h"
 #include <random>
-#include <iterator>
 
 using namespace cocos2d;
 using namespace std;
@@ -22,10 +21,10 @@ public:
 	void	ChangeState();
 	void	ChangeOnlyColor();
 
-	void    Select(bool value);
+	void  Select(bool value);
 	bool	GetSelect();
 
-	void    SetPowerAndEpUsage();
+	void  SetPowerAndEpUsage();
 	void	SetSprite();
 
 	int		GetPower();
@@ -36,8 +35,11 @@ public:
 	void	ShowPowerLabel();
 	void	HidePowerLanel();
 
+	float	GetHorizon();
+	StoneType GetType() { return type; }
 	int		GetRanValueInRange(int, int);
-
+  
+private:
 	StoneType type;
 	StoneTier tier;
 	int		epUsage;
