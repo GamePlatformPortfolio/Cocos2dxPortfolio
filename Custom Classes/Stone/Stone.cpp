@@ -5,16 +5,16 @@
 Stone::Stone(StoneType getType, StoneTier getTier, Vec2 spawnPos, int size):
 	type(getType), tier(getTier)
 {
-	//--------------½ºÇÁ¶óÀÌÆ® »ı¼º / ¼¼ÆÃ
+	//--------------ìŠ¤í”„ë¼ì´íŠ¸ ìƒì„± / ì„¸íŒ…
 	SetSprite();			
 	sprite->setContentSize(Size(size, size));
 	sprite->setPosition(spawnPos);
 
-	//--------------µî±Şº° ÁÖ»çÀ§°ª ¼¼ÆÃ
+	//--------------ë“±ê¸‰ë³„ ì£¼ì‚¬ìœ„ê°’ ì„¸íŒ…
 	//srand((unsigned int)time(NULL));
 	SetPowerAndEpUsage();
 
-	//È°¼ºÈ­/ºñÈ°¼ºÈ­ »óÅÂ »ö ¼³Á¤
+	//í™œì„±í™”/ë¹„í™œì„±í™” ìƒíƒœ ìƒ‰ ì„¤ì •
 	color = Color3B::WHITE;
 	selectedColor = Color3B::GRAY;
 
@@ -22,7 +22,6 @@ Stone::Stone(StoneType getType, StoneTier getTier, Vec2 spawnPos, int size):
 	powerFontSize = 24;
 	powerShowTime = 0.2f;
 	isSelect = false;
-	horizon = spawnPos.x;
 
 	powerLabel = Label::createWithSystemFont(to_string(power), "", powerFontSize);
 	powerLabel->setColor(Color3B::BLACK);
@@ -163,19 +162,19 @@ void Stone::SetPowerAndEpUsage() {
 
 void Stone::SetSprite() {
 	string filename = "Stn_";
-	//----------------------½ºÅæ Å¸ÀÔ(¹°°ø, ¸¶°ø, ¹æ¾î, È¸ÇÇ)
+	//----------------------ìŠ¤í†¤ íƒ€ì…(ë¬¼ê³µ, ë§ˆê³µ, ë°©ì–´, íšŒí”¼)
 	if		(type == StoneType::PhysicalAttack)		filename += StringUtils::format("PA_");
 	else if (type == StoneType::MagicAttack)		filename += StringUtils::format("MA_");
 	else if (type == StoneType::Guard)				filename += StringUtils::format("GD_");
 	else if (type == StoneType::Dodge)				filename += StringUtils::format("DG_");
-	//----------------------½ºÅæ µî±Ş(Normal, Rare, Unique, Epic)
+	//----------------------ìŠ¤í†¤ ë“±ê¸‰(Normal, Rare, Unique, Epic)
 	if		(tier == StoneTier::Normal)				filename += StringUtils::format("N.png");
 	else if (tier == StoneTier::Rare)				filename += StringUtils::format("R.png");
 	else if (tier == StoneTier::Unique)				filename += StringUtils::format("U.png");
 	else if (tier == StoneTier::Epic)				filename += StringUtils::format("E.png");
-	//------------ÃÖÁ¾ °á°ú¹° ¿¹½Ã : "Stn_PA_N.png"
+	//------------ìµœì¢… ê²°ê³¼ë¬¼ ì˜ˆì‹œ : "Stn_PA_N.png"
 
-		//½ºÇÁ¶óÀÌÆ® »ı¼º / ¼¼ÆÃ
+		//ìŠ¤í”„ë¼ì´íŠ¸ ìƒì„± / ì„¸íŒ…
 	sprite = Sprite::create(filename);
 }
 
@@ -192,11 +191,13 @@ bool Stone::GetSelect()
 {
 	return isSelect;
 }
+
+float Stone::GetHorizon()
+{
+	return isSelect;
+}
+
 int Stone::GetPower()
 {
 	return power;
-}
-float Stone::GetHorizon()
-{
-	return horizon;
 }

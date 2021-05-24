@@ -81,6 +81,7 @@ void Character::Attack(Stone* curStone)
 
     auto moveSeq = Sequence::create(frontMove, DelayTime::create(0.2f), comebackMove, nullptr);
 
+
     switch (curStone->GetType()) {
     case StoneType::PhysicalAttack : AudioEngine::play2d(Sound_PA, false, 0.1f); break;
     case StoneType::MagicAttack    : AudioEngine::play2d(Sound_MA, false, 0.1f); break;

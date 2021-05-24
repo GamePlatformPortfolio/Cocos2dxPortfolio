@@ -11,21 +11,29 @@
 using namespace cocos2d;
 using namespace std;
 
-const int maxStoneCount = 6;
+const int maxAmount = 24;
+const int handAmount = 6;
+
+typedef vector<Stone*> StoneContainer;
 
 class StonePanel
 {
 public:
 	Sprite*			panelSprite;
-	list<Stone*>	selectedStones;
 
-	Stone*			allStones[maxStoneCount];
+	StoneContainer	allStones;
+	StoneContainer	handStones;
+	StoneContainer	selectedStones;
+
 	Stone*			currentStone;
 
-	StonePanel(CharacterType target, string fileName, Vec2 spawnPos, Size size);
+	StoneContainer::iterator  it;
+
+	StonePanel(CharacterType target, string fileName, Vec2 spawnPos, cocos2d::Size size);
 	~StonePanel();
 
-	void			InitStones(Size size);
+	void			InitStones(cocos2d::Size size);
+
 	StoneType		GetRandomType();
 	StoneTier		GetRandomTier();
 	int GetRanValueInRange(int front, int rear);

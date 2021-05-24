@@ -21,10 +21,10 @@ public:
 	void	ChangeState();
 	void	ChangeOnlyColor();
 
-	void    Select(bool value);
+	void  Select(bool value);
 	bool	GetSelect();
 
-	void    SetPowerAndEpUsage();
+	void  SetPowerAndEpUsage();
 	void	SetSprite();
 
 	int		GetPower();
@@ -38,6 +38,7 @@ public:
 	float	GetHorizon();
 	StoneType GetType() { return type; }
 	int		GetRanValueInRange(int, int);
+  
 private:
 	StoneType type;
 	StoneTier tier;
@@ -46,6 +47,5 @@ private:
 	int		powerFontSize;
 	float	powerShowTime;
 	bool	isSelect;	
-	float   horizon;
 };
 

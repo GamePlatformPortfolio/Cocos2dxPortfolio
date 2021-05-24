@@ -43,7 +43,7 @@ bool HelloWorld::init()
     pMenu->alignItemsHorizontally();
     this->addChild(pMenu); 
 
-    //-----[Ä¿½ºÅÒ °´Ã¼ »ı¼º ¹× ÃÊ±âÈ­]
+    //-----[ì»¤ìŠ¤í…€ ê°ì²´ ìƒì„± ë° ì´ˆê¸°í™”]
 
     playerStone = new StonePanel(CharacterType::Player,
         "StonePanel.png",
@@ -107,16 +107,16 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 
     bool bTouch = false;
         
-    for (int i = 0; i < maxStoneCount; i++)
+    for (int i = 0; i < handAmount; i++)
     {
-        bTouch = playerStone->allStones[i]->sprite->getBoundingBox().containsPoint(touchPoint);
+        bTouch = playerStone->handStones[i]->sprite->getBoundingBox().containsPoint(touchPoint);
         if (bTouch)
         {
-            if (playerStone->allStones[i]->GetSelect())
+            if (playerStone->handStones[i]->GetSelect())
             {
                 playerStone->UnSelectedStone(i);
             }
-            else if (playerStone->allStones[i]->GetSelect() == false && canSelect)
+            else if (playerStone->handStones[i]->GetSelect() == false && canSelect)
             {
                 playerStone->SelectStone(i);
             }
@@ -154,11 +154,13 @@ void HelloWorld::update(float dt)
         pMenu->setVisible(false);
     }
 
+
     //if (playerStatus->target != nullptr )
     //{
-    //    playerStatus->UpdateHpBar();
+        //playerStatus->UpdateHpBar();
     //}
 }
+
 
 void HelloWorld::StartBattle(Ref* pSender)
 {
@@ -199,6 +201,8 @@ void HelloWorld::StartBattle(Ref* pSender)
             canSelect = true;
         });
 
+#pragma region Final Sequence
+
     auto battleSeq = Sequence::create(
         hide, DelayTime::create(0.5f),
         showCurStone, DelayTime::create(1.0f),
@@ -214,8 +218,9 @@ void HelloWorld::StartBattle(Ref* pSender)
         end, DelayTime::create(0.5f),
         nullptr);
 
-    this->runAction(battleSeq);
-    
+#pragma endregion
+
+    this->runAction(battleSeq);    
 }
 
 void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
@@ -236,7 +241,7 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
     }
     else
     {
-        //ºÎ‹HÇô¼­ Ãæµ¹ÇÏ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ÀÖÀ¸¸é ÁÁÀ»°Í °°´Ù ¤¾¤¾
+        //ë¶€Â‹Hí˜€ì„œ ì¶©ëŒí•˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ ìˆìœ¼ë©´ ì¢‹ì„ê²ƒ ê°™ë‹¤ ã…ã…
         return;
     }
 }
