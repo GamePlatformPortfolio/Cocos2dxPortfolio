@@ -1,7 +1,6 @@
 #pragma once
 #include "cocos2d.h"
-#include "StoneTier.h"
-#include "StoneType.h"
+#include "Custom Classes/Enum Collection/EnumCollection.h"
 #include <random>
 
 using namespace cocos2d;
@@ -10,42 +9,55 @@ using namespace std;
 class Stone
 {
 public:
-	Sprite* sprite;
-	Label*  powerLabel;
-	Color3B color;
-	Color3B selectedColor;
-
-	Stone(StoneType getType, StoneTier getTier, Vec2 spawnPos, int size);
+	Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size);
 	~Stone();
 
-	void	ChangeState();
-	void	ChangeOnlyColor();
+	void SetPowerAndEpUsage();
+	void InitSprite(string root);
+	
+	Sprite* GetSprite();
 
-	void  Select(bool value);
-	bool	GetSelect();
+	int GetRanValueInRange(int, int);
 
-	void  SetPowerAndEpUsage();
-	void	SetSprite();
+	void ChangeState();
+	void ChangeOnlyColor();
 
-	int		GetPower();
+	void Select(bool value);
+	bool GetSelect();
 
-	void	Show();
-	void	Hide();
+	int	GetPower();
+	StoneType GetType();
 
-	void	ShowPowerLabel();
-	void	HidePowerLanel();
+	void Show();
+	void Hide();
 
-	float	GetHorizon();
-	StoneType GetType() { return type; }
-	int		GetRanValueInRange(int, int);
-  
+	void ShowPower();
+	void HidePower();
+
+	void InitInformSprite();
+	void ShowInform();
+	void HideInform();
+
+#pragma region PRIVATE
 private:
+	Sprite* sprite;
+	Label* powerText;
+
+	Sprite* informSprite;
+
+	const Color3B color = Color3B::WHITE;
+	const Color3B selectedColor = Color3B::GRAY;
+
 	StoneType type;
 	StoneTier tier;
-	int		epUsage;
-	int		power;
-	int		powerFontSize;
-	float	powerShowTime;
-	bool	isSelect;	
+
+	int epUsage;
+
+	int power;
+	const int fontSize = 24;
+	const float actionTime = 0.2f;
+
+	bool isSelect;
+#pragma endregion
 };
 
