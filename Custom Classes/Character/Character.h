@@ -5,53 +5,50 @@
 #include "cocos2d.h"
 
 using namespace cocos2d;
-using namespace std;
 using namespace cocos2d::experimental;
+using namespace std;
 
 class Character
 {
 public:
-    Character(CharacterType type, string fileName, Vec2 pos, Size size);
+    Character(CharType type, string root, Vec2 pos, Size size);
     ~Character();
 
-    Sprite*         GetSprite();
-    CharacterType   GetType();
-    Dir             GetDir();
+    Sprite* GetSprite();
+    CharType GetType();
 
-    Vec2            GetOriginPos();
+    void Hide();
+    void Show();
 
-    void            Action(Stone* curStone);
-    void            Attack(Stone* curStone);
-    void            Damaged(int value);
+    void Attack(Stone* curStone);
+    void SufferDamage(int value);
 
-    void            Hide();
-    void            Show();
+    const int GetMaxHp();
+    const int GetCurrentHp();
 
-    int             GetMaxHp();
-    int             GetCurrentHp();
-
+    string GetSpriteName(CharType type, CharAnim anim);
+#pragma region PRIVATE
 private:
-    Sprite*         sprite;      // 읽기 전용
-    CharacterType   type;        // 읽기 전용
-    Dir             dir;         // 읽기 전용
-                                         
-    Vec2            originPos;   // 읽기 전용
-                                         
-    float           defaultTime;         
-    int             maxHp;       // 읽기 전용 
-    int             currentHp;           
-    int             maxNp;       // 읽기 전용
-    int             currentNp;           
-    int             maxEp;       // 읽기 전용
-    int             currentEp;
-    int             regenEp;     // 읽기 전용
+    Sprite* sprite;
+    CharType type;
+    Direction dir;
+    Vec2 originPos;
 
-    string Sound_PA;            //Sound of Physical Attack
-    string Sound_MA;            //Sound of Magic Attack
+    const float actionTime = 0.5f;
 
-    string Sound_DG;            //Sound of Dodge
-    string Sound_AD;            //Attack Draw
+    int maxHp;
+    int currentHp;
+    int maxNp;
+    int currentNp;
+    int maxEp;
+    int currentEp;
+    int regenEp;
+
+    string Sound_PA; //Sound of Physical Attack
+    string Sound_MA; //Sound of Magic Attack
+
+    string Sound_DG; //Sound of Dodge
+    string Sound_AD; //Attack Draw
     string Sound_Hit;
-
-
+#pragma endregion
 };
