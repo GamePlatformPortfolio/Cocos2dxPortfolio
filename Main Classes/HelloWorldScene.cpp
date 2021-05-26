@@ -20,15 +20,16 @@ static void problemLoading(const char* filename)
 
 bool HelloWorld::init()
 {
+#pragma region Super_Init
     if ( !Scene::init() )
     {
         return false;
     }
 
     srand((unsigned int)time(NULL));
-
+#pragma endregion
     canSelect = true;
-
+#pragma region Init_BackGround
     // Init Background
     string bgFileName = "Background.png";
     bgSprite = Sprite::create(spriteRootFolder + bgFileName);
@@ -37,7 +38,8 @@ bool HelloWorld::init()
     this->addChild(bgSprite);
 
     AudioEngine::play2d("Sounds/BGM.mp3", true, 0.1f);
-
+#pragma endregion
+#pragma region Init_Menu
     // Init Menu
     pMenuItem1 = MenuItemFont::create("Battle", CC_CALLBACK_1(HelloWorld::StartBattle, this));
     pMenuItem1->setColor(Color3B::BLACK);
@@ -45,7 +47,8 @@ bool HelloWorld::init()
     pMenu = Menu::create(pMenuItem1, nullptr);
     pMenu->alignItemsHorizontally();
     this->addChild(pMenu); 
-
+#pragma endregion
+#pragma region Init_StonePanel
     // Init Stone Panel
     playerStone = new StonePanel(
         CharType::PLAYER,
@@ -62,7 +65,8 @@ bool HelloWorld::init()
         Size(GetScreenSize().width, GetScreenSize().height / 4)
     );
     this->addChild(enemyStone->panelSprite);
-
+#pragma endregion
+#pragma region Init_Character
     // Init Character
     player = new Character(
         CharType::PLAYER,
@@ -79,6 +83,11 @@ bool HelloWorld::init()
         Size(300, 300)
     );
     this->addChild(enemy ->GetSprite());
+#pragma endregion
+#pragma region Init_UIPanel
+    playerStat = new StatPanel(player->GetType(), spriteRootFolder);
+    enemyStat = new StatPanel(enemy->GetType(), spriteRootFolder);
+#pragma endregion
 
     scheduleUpdate();
 
@@ -171,7 +180,6 @@ void HelloWorld::update(float dt)
     else
         pMenu->setVisible(false);
 }
-
 
 void HelloWorld::StartBattle(Ref* pSender)
 {

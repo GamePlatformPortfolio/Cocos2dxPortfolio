@@ -6,6 +6,8 @@
 #include "cocos2d.h"
 #include "Custom Classes/Character/Character.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
+#include "Custom Classes/StatPanel/StatPanel.h"
+
 #include "Custom Classes/Stone/Stone.h"
 #include "Custom Classes/Stone/StonePanel.h"
 
@@ -35,6 +37,9 @@ public:
     Character* player;
     Character* enemy;
 
+    StatPanel* playerStat;
+    StatPanel* enemyStat;
+
     // About Touch Event 
     Menu* pMenu;
     MenuItemFont* pMenuItem1;
@@ -58,4 +63,8 @@ public:
     Vec2 GetScreenMiddlePos();
 };
 
+    // ETC
+    Size GetScreenSize();
+    Vec2 GetScreenMiddlePos();
+};
 #endif

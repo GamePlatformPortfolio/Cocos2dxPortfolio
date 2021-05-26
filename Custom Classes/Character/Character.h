@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Custom Classes/StatPanel/StatPanel.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
 #include "Custom Classes/Stone/Stone.h"
 #include "cocos2d.h"
@@ -7,6 +8,7 @@
 using namespace cocos2d;
 using namespace cocos2d::experimental;
 using namespace std;
+class StatPanel;
 
 class Character
 {
@@ -25,14 +27,22 @@ public:
 
     const int GetMaxHp();
     const int GetCurrentHp();
+    const int GetMaxNp();
+    const int GetCurrentNp();
+    const int GetMaxEp();
+    const int GetCurrentEp();
 
     string GetSpriteName(CharType type, CharAnim anim);
+
 #pragma region PRIVATE
 private:
     Sprite* sprite;
     CharType type;
     Direction dir;
     Vec2 originPos;
+
+    friend class StatPanel;
+    StatPanel* stat;
 
     const float actionTime = 0.5f;
 

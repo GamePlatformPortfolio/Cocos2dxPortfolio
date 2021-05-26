@@ -1,4 +1,4 @@
-#include "Character.h"
+#include "Custom Classes/Character/Character.h"
 #include <AudioEngine.h>
 
 Character::Character(CharType type, string root, Vec2 pos, Size size)
@@ -10,9 +10,10 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
     sprite->setContentSize(size);
 
     this->type = type;
-    this->maxHp = 10;
-    this->maxEp = 10;
-    this->maxNp = 10;
+
+    maxHp = 10; currentHp = maxHp;
+    maxEp = 10; currentEp = maxEp;
+    maxNp = 10; currentNp = maxNp;
 
     this->originPos = pos;
 
@@ -41,6 +42,15 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
         Sound_AD = "Attack_Draw.mp3";
         Sound_Hit = "Hit.mp3";
     }
+
+    stat = new StatPanel(type, root);
+    sprite->addChild(stat->GetBackGround());
+    stat->GetBackGround()->setPosition(Vec2(sprite->getContentSize().width/2, sprite->getContentSize().height / 2 -100));
+    sprite->addChild(stat->GetHpGauge());
+    stat->GetHpGauge()->setAnchorPoint(Vec2(1, 0.5));
+    stat->GetHpGauge()->setPosition(Vec2(stat->GetBackGround()->getPosition().x, stat->GetBackGround()->getPosition().y));
+    sprite->addChild(stat->GetNpGauge());
+    stat->GetNpGauge()->setPosition(Vec2(sprite->getContentSize().width/2 + 50, sprite->getContentSize().height / 2 -100));
 }
 
 Character::~Character()
@@ -79,6 +89,7 @@ void Character::Attack(Stone* curStone)
 
     Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
+
     auto moveFront = MoveTo::create(actionTime, originPos + moveDistance);
     auto moveOrigin = MoveTo::create(actionTime, originPos);
 
@@ -86,8 +97,6 @@ void Character::Attack(Stone* curStone)
     sprite->setContentSize(Size(300, 300)); });
 
     auto moveSeq = Sequence::create(moveFront, DelayTime::create(0.2f), moveOrigin, back, nullptr);
-
-
 
     switch (curStone->GetType()) 
     {
@@ -106,7 +115,10 @@ void Character::SufferDamage(int value)
     sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DAMAGE_ANIM));
     sprite->setContentSize(Size(300, 300));
 
+    /*currentHp -= value;*/
     currentHp -= value;
+    stat->SetHpGauge(maxHp, currentHp);
+    stat->SetNpGauge(maxNp, currentNp);
 
     Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
@@ -120,16 +132,6 @@ void Character::SufferDamage(int value)
     AudioEngine::play2d(Sound_Hit, false, 0.1f);
 
     sprite->runAction(moveSeq);
-}
-
-const int Character::GetMaxHp()
-{
-    return maxHp;
-}
-
-const int Character::GetCurrentHp()
-{
-    return currentHp;
 }
 
 string Character::GetSpriteName(CharType name, CharAnim anim)
@@ -161,7 +163,7 @@ string Character::GetSpriteName(CharType name, CharAnim anim)
         targetAnim = "Hit";
         break;
     case DEAD_ANIM:
-        // º¸·ù
+        // ÂºÂ¸Â·Ã¹
         break;
     } 
 
@@ -169,3 +171,5 @@ string Character::GetSpriteName(CharType name, CharAnim anim)
     return targetName + targetAnim + ".png";
 }
 
+    return targetName + targetAnim + ".png";
+}
