@@ -170,6 +170,3 @@ string Character::GetSpriteName(CharType name, CharAnim anim)
 
     return targetName + targetAnim + ".png";
 }
-
-    return targetName + targetAnim + ".png";
-}

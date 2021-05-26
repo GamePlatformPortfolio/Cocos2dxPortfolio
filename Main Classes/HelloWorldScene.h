@@ -63,8 +63,4 @@ public:
     Vec2 GetScreenMiddlePos();
 };
 
-    // ETC
-    Size GetScreenSize();
-    Vec2 GetScreenMiddlePos();
-};
 #endif
