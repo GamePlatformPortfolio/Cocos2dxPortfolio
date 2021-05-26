@@ -7,6 +7,7 @@ StonePanel::StonePanel(CharType targetType, string root, Vec2 pos, Size size)
 
 	if(targetType == CharType::PLAYER)panelSprite = Sprite::create(root + "Panel/StonePanel.png");
 	else if (targetType == CharType::ENEMY)panelSprite = Sprite::create(root + "Panel/Guardian_StonePanel.png");
+
 	panelSprite->setPosition(pos);
 	panelSprite->setContentSize(size);
 

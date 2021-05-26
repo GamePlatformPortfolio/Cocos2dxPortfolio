@@ -88,6 +88,7 @@ bool HelloWorld::init()
     playerStat = new StatPanel(player->GetType(), spriteRootFolder);
     enemyStat = new StatPanel(enemy->GetType(), spriteRootFolder);
 #pragma endregion
+
     scheduleUpdate();
 
     return true;

@@ -10,6 +10,7 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
     sprite->setContentSize(size);
 
     this->type = type;
+
     maxHp = 10; currentHp = maxHp;
     maxEp = 10; currentEp = maxEp;
     maxNp = 10; currentNp = maxNp;
@@ -88,6 +89,7 @@ void Character::Attack(Stone* curStone)
 
     Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
+
     auto moveFront = MoveTo::create(actionTime, originPos + moveDistance);
     auto moveOrigin = MoveTo::create(actionTime, originPos);
 
@@ -95,8 +97,6 @@ void Character::Attack(Stone* curStone)
     sprite->setContentSize(Size(300, 300)); });
 
     auto moveSeq = Sequence::create(moveFront, DelayTime::create(0.2f), moveOrigin, back, nullptr);
-
-
 
     switch (curStone->GetType()) 
     {
@@ -134,18 +134,6 @@ void Character::SufferDamage(int value)
     sprite->runAction(moveSeq);
 }
 
-//const int Character::GetMaxHp() { return maxHp; }
-//
-//const int Character::GetCurrentHp() { return currentHp; }
-//
-//const int Character::GetMaxNp() { return maxNp; }
-//
-//const int Character::GetCurrentNp() { return currentNp; }
-//
-//const int Character::GetMaxEp() { return maxEp; }
-//
-//const int Character::GetCurrentEp() { return currentEp; }
-
 string Character::GetSpriteName(CharType name, CharAnim anim)
 {
     string targetName = "";
@@ -175,10 +163,13 @@ string Character::GetSpriteName(CharType name, CharAnim anim)
         targetAnim = "Hit";
         break;
     case DEAD_ANIM:
-        // º¸·ù
+        // ÂºÂ¸Â·Ã¹
         break;
     } 
 
+
+    return targetName + targetAnim + ".png";
+}
 
     return targetName + targetAnim + ".png";
 }

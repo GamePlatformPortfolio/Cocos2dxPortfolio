@@ -7,6 +7,7 @@
 #include "Custom Classes/Character/Character.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
 #include "Custom Classes/StatPanel/StatPanel.h"
+
 #include "Custom Classes/Stone/Stone.h"
 #include "Custom Classes/Stone/StonePanel.h"
 
@@ -56,6 +57,11 @@ public:
     // About Game Battle
     void StartBattle(Ref* pSender);
     void CompareStone(Stone* playerStone, Stone* enemyStone);
+
+    // ETC
+    Size GetScreenSize();
+    Vec2 GetScreenMiddlePos();
+};
 
     // ETC
     Size GetScreenSize();

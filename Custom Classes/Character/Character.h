@@ -33,7 +33,6 @@ public:
     const int GetCurrentEp();
 
     string GetSpriteName(CharType type, CharAnim anim);
-    void operator=(Character& other) { *this = other; }
 
 #pragma region PRIVATE
 private:
@@ -41,6 +40,7 @@ private:
     CharType type;
     Direction dir;
     Vec2 originPos;
+
     friend class StatPanel;
     StatPanel* stat;
 
