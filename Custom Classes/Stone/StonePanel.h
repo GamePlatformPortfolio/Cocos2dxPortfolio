@@ -19,42 +19,45 @@ typedef vector<Stone*> StoneContainer;
 class StonePanel
 {
 public:
-	Sprite*			panelSprite;
+	Sprite* panelSprite;
 
-	StoneContainer	allStones;
-	StoneContainer	handStones;
-	StoneContainer	selectedStones;
+	StoneContainer allStones;
+	StoneContainer handStones;
+	StoneContainer selectedStones;
 
-	Stone*			currentStone;
+	Stone* currentStone;
 
-	StoneContainer::iterator  it;
+	StoneContainer::iterator it;
 
-	StonePanel(CharacterType target, string fileName, Vec2 spawnPos, cocos2d::Size size);
+	StonePanel(CharType targetType, string root, Vec2 pos, Size size);
 	~StonePanel();
 
-	void			InitStones(cocos2d::Size size);
+	void InitStones(Size size, string root);
 
-	StoneType		GetRandomType();
-	StoneTier		GetRandomTier();
+	StoneType GetRandomType();
+	StoneTier GetRandomTier();
 	int GetRanValueInRange(int front, int rear);
 
-	void			SelectStone(int index);
-	void			UnSelectedStone(int index);
+	void SelectStone(int index);
+	void UnSelectedStone(int index);
 
-	void			HideAll();
-	void			ShowAll();
-	Stone*			GetCurrentStone();
-	Stone*			PopStone();
+	void HideAll();
+	void ShowAll();
+	Stone* GetCurrentStone();
+	Stone* PopStone();
 
-	void			ShowCurrentStone();
-	void			HideCurrentStone();
-	void			PushRandomStones();
-	void			EndBattle();
+	void ShowCurrentStone();
+	void HideCurrentStone();
+
+	// Just for enemy
+	void PushRandomStones(int size);
+
+	void EndBattle();
 
 private:
-	CharacterType	target;
+	CharType target;
 
-	bool			isFirst;
-	float			panelShowTime;
+	bool firstInit;
+	const float actionTime = 0.5f;
 };
 

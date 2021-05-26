@@ -6,7 +6,7 @@
 #include "cocos2d.h"
 #include "Custom Classes/Character/Character.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
-#include "Custom Classes/Status/StatusPanel.h"
+#include "Custom Classes/StatPanel/StatPanel.h"
 #include "Custom Classes/Stone/Stone.h"
 #include "Custom Classes/Stone/StonePanel.h"
 
@@ -22,22 +22,24 @@ public:
 
     CREATE_FUNC(HelloWorld);
 
-    Sprite*         bgSprite;
-    bool            canSelect;
+    Sprite* bgSprite;
+    bool canSelect;
 
-    //-----[커스텀 객체]
+    bool isHold;
 
-    StatusPanel*    playerStatus;
-    StatusPanel*    enemyStatus;
+    const string spriteRootFolder = "Images/";
+    const string audioRootFolder = "Sounds/";
 
-    StonePanel*     playerStone;
-    StonePanel*     enemyStone;
+    StonePanel* playerStone;
+    StonePanel* enemyStone;
 
-    Character*      player;
-    Character*      enemy;
+    Character* player;
+    Character* enemy;
 
-    //-----[이벤트]
+    StatPanel* playerStat;
+    StatPanel* enemyStat;
 
+    // About Touch Event 
     Menu* pMenu;
     MenuItemFont* pMenuItem1;
     EventListenerTouchOneByOne* listener;
@@ -51,10 +53,12 @@ public:
 
     void update(float dt);
 
-    //-----[게임 진행 관련]
-
+    // About Game Battle
     void StartBattle(Ref* pSender);
     void CompareStone(Stone* playerStone, Stone* enemyStone);
-};
 
+    // ETC
+    Size GetScreenSize();
+    Vec2 GetScreenMiddlePos();
+};
 #endif

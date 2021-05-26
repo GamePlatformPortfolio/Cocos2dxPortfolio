@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 #include <random>
+
 using namespace cocos2d::experimental;
 
 USING_NS_CC;
@@ -19,61 +20,75 @@ static void problemLoading(const char* filename)
 
 bool HelloWorld::init()
 {
+#pragma region Super_Init
     if ( !Scene::init() )
     {
         return false;
     }
 
-    scheduleUpdate();
-    AudioEngine::play2d("BGM.mp3", true, 0.1f);
-    auto screenSize = Director::getInstance()->getVisibleSize();
     srand((unsigned int)time(NULL));
+#pragma endregion
     canSelect = true;
-
+#pragma region Init_BackGround
+    // Init Background
     string bgFileName = "Background.png";
-    bgSprite = Sprite::create(bgFileName);//"Images/" + 
-    bgSprite->setContentSize(screenSize);
-    bgSprite->setPosition(screenSize / 2);
+    bgSprite = Sprite::create(spriteRootFolder + bgFileName);
+    bgSprite->setPosition(GetScreenMiddlePos());
+    bgSprite->setContentSize(GetScreenSize());
     this->addChild(bgSprite);
 
+    AudioEngine::play2d("Sounds/BGM.mp3", true, 0.1f);
+#pragma endregion
+#pragma region Init_Menu
+    // Init Menu
     pMenuItem1 = MenuItemFont::create("Battle", CC_CALLBACK_1(HelloWorld::StartBattle, this));
     pMenuItem1->setColor(Color3B::BLACK);
 
     pMenu = Menu::create(pMenuItem1, nullptr);
     pMenu->alignItemsHorizontally();
     this->addChild(pMenu); 
-
-    //-----[커스텀 객체 생성 및 초기화]
-
-    playerStone = new StonePanel(CharacterType::Player,
-        "StonePanel.png",
-        Vec2(screenSize.width / 2, screenSize.height / 8),
-        Size(screenSize.width, screenSize.height / 4));
-
-    enemyStone = new StonePanel(CharacterType::Enemy,
-        "StonePanel.png",
-        Vec2(screenSize.width / 2, screenSize.height - screenSize.height / 8),
-        Size(screenSize.width, screenSize.height / 4));
-
+#pragma endregion
+#pragma region Init_StonePanel
+    // Init Stone Panel
+    playerStone = new StonePanel(
+        CharType::PLAYER,
+        spriteRootFolder,
+        Vec2(GetScreenSize().width / 2, GetScreenSize().height / 8),
+        Size(GetScreenSize().width, GetScreenSize().height / 4)
+    );
     this->addChild(playerStone->panelSprite);
 
+    enemyStone = new StonePanel(
+        CharType::ENEMY,
+        spriteRootFolder,
+        Vec2(GetScreenSize().width / 2, GetScreenSize().height - GetScreenSize().height / 8),
+        Size(GetScreenSize().width, GetScreenSize().height / 4)
+    );
     this->addChild(enemyStone->panelSprite);
-
-    player = new Character(CharacterType::Player,
-        "Player.png",
-        Vec2(screenSize.width / 4, screenSize.height / 2),
-        Size(300, 300));
-
-    enemy = new Character(CharacterType::Enemy,
-        "Enemy.png",
-        Vec2(screenSize.width / 2 + screenSize.width / 4, screenSize.height / 2),
-        Size(300, 300));
-
+#pragma endregion
+#pragma region Init_Character
+    // Init Character
+    player = new Character(
+        CharType::PLAYER,
+        spriteRootFolder,
+        Vec2(GetScreenMiddlePos() - Vec2(GetScreenSize().width / 4, 0)),
+        Size(300, 300)
+    );
     this->addChild(player->GetSprite());
-    this->addChild(enemy ->GetSprite());
 
-    playerStatus = new StatusPanel("Crv_Bar.png", "Crv_Hp.png", player, Size(30, 100),
-        Vec2(50, 0), 100);
+    enemy = new Character(
+        CharType::ENEMY,
+        spriteRootFolder,
+        Vec2(GetScreenMiddlePos() + Vec2(GetScreenSize().width / 4, 0)),
+        Size(300, 300)
+    );
+    this->addChild(enemy ->GetSprite());
+#pragma endregion
+#pragma region Init_UIPanel
+    playerStat = new StatPanel(player->GetType(), spriteRootFolder);
+    enemyStat = new StatPanel(enemy->GetType(), spriteRootFolder);
+#pragma endregion
+    scheduleUpdate();
 
     return true;
 }
@@ -104,25 +119,24 @@ void HelloWorld::onExit()
 bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
     auto touchPoint = touch->getLocation();
-
-    bool bTouch = false;
         
     for (int i = 0; i < handAmount; i++)
     {
-        bTouch = playerStone->handStones[i]->sprite->getBoundingBox().containsPoint(touchPoint);
+        bool bTouch = playerStone->handStones[i]->GetSprite()->getBoundingBox().containsPoint(touchPoint);
         if (bTouch)
         {
             if (playerStone->handStones[i]->GetSelect())
             {
                 playerStone->UnSelectedStone(i);
+                
             }
             else if (playerStone->handStones[i]->GetSelect() == false && canSelect)
             {
                 playerStone->SelectStone(i);
             }
+            playerStone->handStones[i]->ShowInform();
         }
     }
-
     return true;
 }
 
@@ -134,6 +148,14 @@ void HelloWorld::onTouchMoved(Touch* touch, Event* event)
 void HelloWorld::onTouchEnded(Touch* touch, Event* event)
 {
     auto touchPoint = touch->getLocation();
+
+    for (int i = 0; i < handAmount; i++)
+    {
+ 
+
+            playerStone->handStones[i]->HideInform();
+
+    }
 }
 
 void HelloWorld::onTouchCancelled(Touch* touch, Event* event)
@@ -143,24 +165,20 @@ void HelloWorld::onTouchCancelled(Touch* touch, Event* event)
 
 void HelloWorld::update(float dt)
 {
-    if (playerStone->selectedStones.size() >= 3)
+    if (playerStone->selectedStones.size() >= 4)
     {
         canSelect = false;
-        pMenu->setVisible(true);
     }
     else
     {
         canSelect = true;
-        pMenu->setVisible(false);
+        
     }
-
-
-    //if (playerStatus->target != nullptr )
-    //{
-        //playerStatus->UpdateHpBar();
-    //}
+    if (playerStone->selectedStones.size() > 0)
+        pMenu->setVisible(true);
+    else
+        pMenu->setVisible(false);
 }
-
 
 void HelloWorld::StartBattle(Ref* pSender)
 {
@@ -172,8 +190,10 @@ void HelloWorld::StartBattle(Ref* pSender)
 
     auto showCurStone = CallFunc::create([=]()->void
         {
+            enemyStone->PushRandomStones(playerStone->selectedStones.size());
             playerStone->ShowCurrentStone();
             enemyStone ->ShowCurrentStone();
+
         });
 
     auto compareStone = CallFunc::create([=]()->void
@@ -203,20 +223,69 @@ void HelloWorld::StartBattle(Ref* pSender)
 
 #pragma region Final Sequence
 
-    auto battleSeq = Sequence::create(
-        hide, DelayTime::create(0.5f),
-        showCurStone, DelayTime::create(1.0f),
-        compareStone, DelayTime::create(2.0f),
-        hideCurStone, DelayTime::create(1.0f),
-        showCurStone, DelayTime::create(1.0f),
-        compareStone, DelayTime::create(1.0f),
-        hideCurStone, DelayTime::create(1.0f),
-        showCurStone, DelayTime::create(1.0f),
-        compareStone, DelayTime::create(2.0f),
-        hideCurStone, DelayTime::create(1.0f),
-        show, DelayTime::create(0.5f),
-        end, DelayTime::create(0.5f),
-        nullptr);
+    Sequence* battleSeq;
+
+    switch (playerStone->selectedStones.size())
+    {
+    case 1:
+        battleSeq = Sequence::create(
+            hide, DelayTime::create(0.5f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            show, DelayTime::create(0.5f),
+            end, DelayTime::create(0.5f),
+            nullptr);
+        break;
+    case 2:
+        battleSeq = Sequence::create(
+            hide, DelayTime::create(0.5f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            show, DelayTime::create(0.5f),
+            end, DelayTime::create(0.5f),
+            nullptr);
+        break;
+    case 3:
+        battleSeq = Sequence::create(
+            hide, DelayTime::create(0.5f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            show, DelayTime::create(0.5f),
+            end, DelayTime::create(0.5f),
+            nullptr);
+        break;
+    case 4:
+        battleSeq = Sequence::create(
+            hide, DelayTime::create(0.5f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            showCurStone, DelayTime::create(1.0f),
+            compareStone, DelayTime::create(2.0f),
+            hideCurStone, DelayTime::create(1.0f),
+            show, DelayTime::create(0.5f),
+            end, DelayTime::create(0.5f),
+            nullptr);
+        break;
+    }
 
 #pragma endregion
 
@@ -225,25 +294,41 @@ void HelloWorld::StartBattle(Ref* pSender)
 
 void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
 {
-    int calculatedDamage = playerStone->GetPower() - enemyStone->GetPower();
+    int damageValue = playerStone->GetPower() - enemyStone->GetPower();
 
-    if (calculatedDamage > 0)
+    if (damageValue > 0)
     {
         player->Attack(playerStone);
-        enemy ->Damaged(calculatedDamage);
+        enemy->SufferDamage(damageValue);
         return;
     }
-    else if (calculatedDamage < 0)
+    else if (damageValue < 0)
     {
-        enemy ->Attack(enemyStone);
-        player->Damaged(-calculatedDamage);
+        enemy->Attack(enemyStone);
+        player->SufferDamage(damageValue * (-1));
         return;
     }
     else
     {
-        //부H혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
+        //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
         return;
     }
+}
+
+Size HelloWorld::GetScreenSize()
+{
+    Size screenSize = Director::getInstance()->getVisibleSize();
+
+    return screenSize;
+}
+
+Vec2 HelloWorld::GetScreenMiddlePos()
+{
+    Size screenSize = Director::getInstance()->getVisibleSize();
+
+    Vec2 middlePos = Vec2(screenSize.width / 2, screenSize.height / 2);
+
+    return middlePos;
 }
 
 

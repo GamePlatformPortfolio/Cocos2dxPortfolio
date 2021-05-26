@@ -1,22 +1,20 @@
 #include "StonePanel.h"
-#include "StoneType.h"
-#include "StoneTier.h"
+#include "Custom Classes/Enum Collection/EnumCollection.h"
 
-StonePanel::StonePanel(CharacterType target, string fileName, Vec2 spawnPos, Size size)
+StonePanel::StonePanel(CharType targetType, string root, Vec2 pos, Size size)
 {
 	currentStone = nullptr;
 
-	panelSprite = Sprite::create(fileName);
-
-	panelSprite->setPosition(spawnPos);
+	if(targetType == CharType::PLAYER)panelSprite = Sprite::create(root + "Panel/StonePanel.png");
+	else if (targetType == CharType::ENEMY)panelSprite = Sprite::create(root + "Panel/Guardian_StonePanel.png");
+	panelSprite->setPosition(pos);
 	panelSprite->setContentSize(size);
 
-	this->target = target;
+	this->target = targetType;
 
-	isFirst = true;
-	panelShowTime = 0.5f;
+	this->firstInit = true;
 
-	InitStones(size);
+	InitStones(size, root);
 }
 
 StonePanel::~StonePanel()
@@ -24,7 +22,7 @@ StonePanel::~StonePanel()
 
 }
 
-void StonePanel::InitStones(Size size)
+void StonePanel::InitStones(Size size, string root)
 {
 	const int hOffset = size.width / (handAmount + 1); // handAmount + 1로 나눠야 handStones을(를) 대칭으로 배치가능
 	const int vOffset = size.height / 2;
@@ -36,11 +34,12 @@ void StonePanel::InitStones(Size size)
 		(
 			GetRandomType(),
 			GetRandomTier(),
+			root,
 			Vec2::ZERO,
 			50
 		));
-		allStones[i]->sprite->setVisible(false);
-		panelSprite->addChild(allStones[i]->sprite);
+		allStones[i]->GetSprite()->setVisible(false);
+		panelSprite->addChild(allStones[i]->GetSprite());
   }
 
 	selectedStones.clear();
@@ -50,8 +49,8 @@ void StonePanel::InitStones(Size size)
 	for (int i = 0; i < handAmount; i++)
 	{
 		handStones.push_back(allStones[i]);
-		handStones[i]->sprite->setVisible(true);
-		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
+		handStones[i]->GetSprite()->setVisible(true);
+		handStones[i]->GetSprite()->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
 	}	
 }
 
@@ -78,7 +77,7 @@ void StonePanel::UnSelectedStone(int index)
 
 void StonePanel::HideAll()
 {
-	auto fadeOut = FadeOut::create(panelShowTime);
+	auto fadeOut = FadeOut::create(actionTime);
 
 	// 패널을 숨깁니다.
 	panelSprite->runAction(fadeOut->clone());
@@ -92,7 +91,7 @@ void StonePanel::HideAll()
 
 void StonePanel::ShowAll()
 {
-	auto fadeIn = FadeIn::create(panelShowTime);
+	auto fadeIn = FadeIn::create(actionTime);
 
 	// 패널을 보입니다.
 	panelSprite->runAction(fadeIn->clone());
@@ -109,10 +108,7 @@ void StonePanel::ShowAll()
 		allStones[i]->Show();
 		handStones.push_back(allStones[i]);
 
-		handStones[i]->sprite->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
-
-		
-	
+		handStones[i]->GetSprite()->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
 	}
 
 	for (Stone* stone : allStones)
@@ -122,7 +118,7 @@ void StonePanel::ShowAll()
 
 	for (Stone* stone : handStones)
 	{
-		stone->sprite->setVisible(true);
+		stone->GetSprite()->setVisible(true);
 	}
 }
 
@@ -153,12 +149,7 @@ Stone* StonePanel::PopStone()
 
 void StonePanel::ShowCurrentStone()
 {
-	// 상대방의 패널이면 랜덤한 스톤을 선택합니다.
-	if (target == CharacterType::Enemy && isFirst)
-	{
-		PushRandomStones();
-		isFirst = false;
-	}
+	
 
 	// 스톤들의 상태는 변경하지 않고 색만 바꿉니다.
 	for (Stone* stone : handStones)
@@ -178,7 +169,7 @@ void StonePanel::ShowCurrentStone()
 	Vec2 targetPos = Vec2(panelSprite->getContentSize().width / 2, panelSprite->getContentSize().height / 2);
 
 	// 패널의 중앙으로 이동시킨 후에 표시합니다.
-	currentStone->sprite->setPosition(targetPos);
+	currentStone->GetSprite()->setPosition(targetPos);
 	currentStone->Show();
 }
 
@@ -205,16 +196,15 @@ void StonePanel::HideCurrentStone()
 				}
 			});
 
-
 		auto hideSeq = Sequence::create(hide, DelayTime::create(0.2f), moveToLast, nullptr);
 
-		currentStone->sprite->runAction(hideSeq);		
+		currentStone->GetSprite()->runAction(hideSeq);		
 	}
 }
 
-void StonePanel::PushRandomStones()
+void StonePanel::PushRandomStones(int size)
 {
-	while(selectedStones.size() != 3)
+	while(selectedStones.size() != size)
 	{
 		int index = rand() % handAmount;
 
@@ -234,35 +224,33 @@ void StonePanel::PushRandomStones()
 
 void StonePanel::EndBattle()
 {
-
-	
-
-
-	isFirst = true;
+	firstInit = true;
 }
 
-StoneType StonePanel::GetRandomType() {
-	//srand(time(NULL));
-	switch (GetRanValueInRange(0,3)) {
-	case 0: return StoneType::PhysicalAttack;
-	case 1: return StoneType::MagicAttack;
-	case 2: return StoneType::Guard;
-	case 3: return StoneType::Dodge;
+StoneType StonePanel::GetRandomType() 
+{
+	switch (GetRanValueInRange(0,3)) 
+	{
+		case 0: return StoneType::PHYSICAL_ATTACK;
+		case 1: return StoneType::MAGIC_ATTACK;
+		case 2: return StoneType::GUARD;
+		case 3: return StoneType::DODGE;
 	}
 }
 
-StoneTier StonePanel::GetRandomTier() {
-	//srand(time(NULL));
-	switch (GetRanValueInRange(0, 3)) {
-	case 0: return StoneTier::Normal;
-	case 1: return StoneTier::Rare;
-	case 2: return StoneTier::Unique;
-	case 3: return StoneTier::Epic;
+StoneTier StonePanel::GetRandomTier() 
+{
+	switch (GetRanValueInRange(0, 3)) 
+	{
+		case 0: return StoneTier::NORMAL;
+		case 1: return StoneTier::RARE;
+		case 2: return StoneTier::UNIQUE;
+		case 3: return StoneTier::EPIC;
 	}
 }
 
-int StonePanel::GetRanValueInRange(int front, int rear) {
-	//return (rand() % (rear - front + 1)) + front;
+int StonePanel::GetRanValueInRange(int front, int rear) 
+{
 	std::random_device rd;
 	std::mt19937_64 gen(rd());
 	std::uniform_int_distribution<int> dis(front, rear);

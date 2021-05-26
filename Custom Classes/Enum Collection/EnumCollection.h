@@ -1,4 +1,36 @@
 #pragma once
 
-enum CharacterType { None = -1, Player, Enemy };
-enum Dir { Left = -1, Zero, Right };
+enum CharType
+{ 
+	NONE   = -1,
+	PLAYER =  0,
+	ENEMY  =  1
+};
+enum CharAnim
+{
+	IDLE_ANIM,
+	PHYSICAL_ATTACK_ANIM,
+	MAGIC_ATTACK_ANIM,
+	DAMAGE_ANIM,
+	DEAD_ANIM
+};
+enum Direction
+{ 
+	LEFT  = -1, 
+	ZERO  =  0,
+	RIGHT =  1
+};
+enum StoneType 
+{
+	PHYSICAL_ATTACK,
+	MAGIC_ATTACK,
+	GUARD,
+	DODGE
+};
+enum StoneTier 
+{
+	NORMAL,
+	RARE,
+	UNIQUE,
+	EPIC
+};
