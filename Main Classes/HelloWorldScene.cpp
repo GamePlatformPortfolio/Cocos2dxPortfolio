@@ -84,10 +84,6 @@ bool HelloWorld::init()
     );
     this->addChild(enemy ->GetSprite());
 #pragma endregion
-#pragma region Init_UIPanel
-    playerStat = new StatPanel(player->GetType(), spriteRootFolder);
-    enemyStat = new StatPanel(enemy->GetType(), spriteRootFolder);
-#pragma endregion
 
     scheduleUpdate();
 
