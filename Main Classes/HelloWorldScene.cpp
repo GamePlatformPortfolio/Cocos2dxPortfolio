@@ -295,14 +295,13 @@ void HelloWorld::StartBattle(Ref* pSender)
 void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
 {
     int damageValue = playerStone->GetPower() - enemyStone->GetPower();
-
     if (damageValue > 0) {
-        player->Attack(playerStone);
+        player->Action(playerStone);
         enemy->SufferDamage(damageValue);
         return;
     }
     else if (damageValue < 0) {
-        enemy->Attack(enemyStone);
+        enemy->Action(enemyStone);
         player->SufferDamage(damageValue * (-1));
         return;
     }
@@ -310,6 +309,20 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
         //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
         return;
     }
+    //if (damageValue > 0) {
+
+    //    enemy->SufferDamage(damageValue);
+    //}
+    //else if (damageValue < 0) {
+
+    //    player->SufferDamage(damageValue);
+    //}
+    //else {
+    //    
+    //    //Conflict Animation
+    //}
+
+
 }
 
 Size HelloWorld::GetScreenSize()

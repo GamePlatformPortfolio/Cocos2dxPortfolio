@@ -8,10 +8,12 @@ enum CharType
 };
 enum CharAnim
 {
-	IDLE_ANIM,
 	PHYSICAL_ATTACK_ANIM,
 	MAGIC_ATTACK_ANIM,
+	GUARD_ANIM,
+	DODGE_ANIM,
 	DAMAGE_ANIM,
+	IDLE_ANIM,
 	DEAD_ANIM
 };
 enum Direction
@@ -22,7 +24,7 @@ enum Direction
 };
 enum StoneType 
 {
-	PHYSICAL_ATTACK,
+	PHYSICAL_ATTACK = 0,
 	MAGIC_ATTACK,
 	GUARD,
 	DODGE
