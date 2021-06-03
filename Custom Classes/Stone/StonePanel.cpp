@@ -5,8 +5,8 @@ StonePanel::StonePanel(CharType targetType, string root, Vec2 pos, Size size)
 {
 	currentStone = nullptr;
 
-	if(targetType == CharType::PLAYER)panelSprite = Sprite::create(root + "Panel/StonePanel.png");
-	else if (targetType == CharType::ENEMY)panelSprite = Sprite::create(root + "Panel/Guardian_StonePanel.png");
+	if		(targetType == CharType::PLAYER)panelSprite = Sprite::create(root + "Panel/StonePanel.png");
+	else if (targetType == CharType::ENEMY) panelSprite = Sprite::create(root + "Panel/Guardian_StonePanel.png");
 
 	panelSprite->setPosition(pos);
 	panelSprite->setContentSize(size);
@@ -84,8 +84,7 @@ void StonePanel::HideAll()
 	panelSprite->runAction(fadeOut->clone());
 
 	// 손에 든 모든 스톤을 숨깁니다.
-	for (Stone* stone : handStones)
-	{
+	for (Stone* stone : handStones){
 		stone->Hide();
 	}
 }

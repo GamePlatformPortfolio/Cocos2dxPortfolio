@@ -51,7 +51,7 @@ public:
 
 	// Just for enemy
 	void PushRandomStones(int size);
-
+	void ClearSelectedStone(){selectedStones.clear();}
 	void EndBattle();
 
 private:

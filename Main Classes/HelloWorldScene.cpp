@@ -84,6 +84,10 @@ bool HelloWorld::init()
     );
     this->addChild(enemy ->GetSprite());
 #pragma endregion
+#pragma region Init_EpPanel
+    epDisplay = new EpPanel(playerStone, player);
+    this->addChild(epDisplay->GetSprite());
+#pragma endregion
 
     scheduleUpdate();
 
@@ -117,21 +121,18 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
     auto touchPoint = touch->getLocation();
         
-    for (int i = 0; i < handAmount; i++)
-    {
+    for (int i = 0; i < handAmount; i++){
         bool bTouch = playerStone->handStones[i]->GetSprite()->getBoundingBox().containsPoint(touchPoint);
-        if (bTouch)
-        {
-            if (playerStone->handStones[i]->GetSelect())
-            {
+        if (bTouch){
+            if (playerStone->handStones[i]->GetSelect()){
                 playerStone->UnSelectedStone(i);
-                
             }
-            else if (playerStone->handStones[i]->GetSelect() == false && canSelect)
-            {
+            else if (playerStone->handStones[i]->GetSelect() == false && canSelect){
+                if (epDisplay->GetPredEP() + playerStone->handStones[i]->GetEpUsage() > player->GetCurrentEp()) return true;
                 playerStone->SelectStone(i);
             }
             playerStone->handStones[i]->ShowInform();
+            epDisplay->Update(UpdateType::Selection);
         }
     }
     return true;
@@ -146,82 +147,76 @@ void HelloWorld::onTouchEnded(Touch* touch, Event* event)
 {
     auto touchPoint = touch->getLocation();
 
-    for (int i = 0; i < handAmount; i++)
-    {
- 
-
-            playerStone->handStones[i]->HideInform();
-
+    for (int i = 0; i < handAmount; i++) { 
+    playerStone->handStones[i]->HideInform(); 
     }
 }
 
-void HelloWorld::onTouchCancelled(Touch* touch, Event* event)
-{
+void HelloWorld::onTouchCancelled(Touch* touch, Event* event){
     auto touchPoint = touch->getLocation();
 }
 
-void HelloWorld::update(float dt)
-{
-    if (playerStone->selectedStones.size() >= 4)
-    {
-        canSelect = false;
-    }
-    else
-    {
-        canSelect = true;
-        
-    }
-    if (playerStone->selectedStones.size() > 0)
-        pMenu->setVisible(true);
-    else
-        pMenu->setVisible(false);
+void HelloWorld::update(float dt){
+    if (playerStone->selectedStones.size() >= 4) { canSelect = false; }
+    else                                         { canSelect = true; }
+
+    if (playerStone->selectedStones.size() > 0) pMenu->setVisible(true);
+    else                                        pMenu->setVisible(false);
 }
 
 void HelloWorld::StartBattle(Ref* pSender)
 {
+#pragma region Action List
     auto hide = CallFunc::create([=]()->void
         {
             playerStone->HideAll();
-            enemyStone ->HideAll();
+            enemyStone->HideAll();
+            epDisplay->HideAll();
         });
-
     auto showCurStone = CallFunc::create([=]()->void
         {
             enemyStone->PushRandomStones(playerStone->selectedStones.size());
             playerStone->ShowCurrentStone();
-            enemyStone ->ShowCurrentStone();
+            enemyStone->ShowCurrentStone();
 
         });
-
     auto compareStone = CallFunc::create([=]()->void
         {
             CompareStone(playerStone->GetCurrentStone(), enemyStone->GetCurrentStone());
         });
-
     auto hideCurStone = CallFunc::create([=]()->void
         {
             playerStone->HideCurrentStone();
-            enemyStone ->HideCurrentStone();
+            enemyStone->HideCurrentStone();
         });
-
     auto show = CallFunc::create([=]()->void
         {
             playerStone->ShowAll();
             enemyStone->ShowAll();
+            epDisplay->ShowAll();
         });
-
     auto end = CallFunc::create([=]()->void
         {
             playerStone->EndBattle();
-            enemyStone ->EndBattle();
+            enemyStone->EndBattle();
 
             canSelect = true;
         });
-
+    auto clearSelected = CallFunc::create([=]()->void{
+    playerStone->ClearSelectedStone();
+    enemyStone->ClearSelectedStone();
+    });
+    auto updateEpPanel = CallFunc::create([=]()->void{
+    epDisplay->Update(UpdateType::Selection);
+    });
+    auto regenEp = CallFunc::create([=]()->void {
+        player->RegenEp();
+        enemy->RegenEp();
+        });
+#pragma endregion
 #pragma region Final Sequence
 
     Sequence* battleSeq;
-
     switch (playerStone->selectedStones.size())
     {
     case 1:
@@ -232,10 +227,12 @@ void HelloWorld::StartBattle(Ref* pSender)
             hideCurStone, DelayTime::create(1.0f),
             show, DelayTime::create(0.5f),
             end, DelayTime::create(0.5f),
+            regenEp, updateEpPanel,
             nullptr);
         break;
     case 2:
         battleSeq = Sequence::create(
+            updateEpPanel,
             hide, DelayTime::create(0.5f),
             showCurStone, DelayTime::create(1.0f),
             compareStone, DelayTime::create(2.0f),
@@ -245,10 +242,12 @@ void HelloWorld::StartBattle(Ref* pSender)
             hideCurStone, DelayTime::create(1.0f),
             show, DelayTime::create(0.5f),
             end, DelayTime::create(0.5f),
+            regenEp, updateEpPanel,
             nullptr);
         break;
     case 3:
         battleSeq = Sequence::create(
+            updateEpPanel,
             hide, DelayTime::create(0.5f),
             showCurStone, DelayTime::create(1.0f),
             compareStone, DelayTime::create(2.0f),
@@ -261,10 +260,12 @@ void HelloWorld::StartBattle(Ref* pSender)
             hideCurStone, DelayTime::create(1.0f),
             show, DelayTime::create(0.5f),
             end, DelayTime::create(0.5f),
+            regenEp, updateEpPanel,
             nullptr);
         break;
     case 4:
         battleSeq = Sequence::create(
+            updateEpPanel,
             hide, DelayTime::create(0.5f),
             showCurStone, DelayTime::create(1.0f),
             compareStone, DelayTime::create(2.0f),
@@ -280,12 +281,14 @@ void HelloWorld::StartBattle(Ref* pSender)
             hideCurStone, DelayTime::create(1.0f),
             show, DelayTime::create(0.5f),
             end, DelayTime::create(0.5f),
+            regenEp, updateEpPanel,
             nullptr);
         break;
     }
 
 #pragma endregion
-
+    player->UseEp(epDisplay->GetPredEP());
+    epDisplay->Update(UpdateType::Result);
     this->runAction(battleSeq);    
 }
 
@@ -293,20 +296,17 @@ void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
 {
     int damageValue = playerStone->GetPower() - enemyStone->GetPower();
 
-    if (damageValue > 0)
-    {
+    if (damageValue > 0) {
         player->Attack(playerStone);
         enemy->SufferDamage(damageValue);
         return;
     }
-    else if (damageValue < 0)
-    {
+    else if (damageValue < 0) {
         enemy->Attack(enemyStone);
         player->SufferDamage(damageValue * (-1));
         return;
     }
-    else
-    {
+    else {
         //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
         return;
     }

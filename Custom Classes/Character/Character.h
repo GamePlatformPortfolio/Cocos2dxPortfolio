@@ -24,13 +24,16 @@ public:
 
     void Attack(Stone* curStone);
     void SufferDamage(int value);
+    void RegenEp() {currentEp += regenEp;}
 
-    const int GetMaxHp();
-    const int GetCurrentHp();
-    const int GetMaxNp();
-    const int GetCurrentNp();
-    const int GetMaxEp();
-    const int GetCurrentEp();
+    int GetMaxHp()        {return maxHp;}
+    int GetCurrentHp()    {return currentHp;}
+    int GetMaxNp()        {return maxNp;}
+    int GetCurrentNp()    {return currentNp;}
+    int GetMaxEp()        {return maxEp;}
+    int GetCurrentEp()    {return currentEp;}
+
+    void UseEp(int epUsed) {currentEp -= epUsed;}
 
     string GetSpriteName(CharType type, CharAnim anim);
 
@@ -41,8 +44,10 @@ private:
     Direction dir;
     Vec2 originPos;
 
-    friend class StatPanel;
+    //friend class StatPanel;
     StatPanel* stat;
+    //EpPanel* epDisplay;
+
 
     const float actionTime = 0.5f;
 

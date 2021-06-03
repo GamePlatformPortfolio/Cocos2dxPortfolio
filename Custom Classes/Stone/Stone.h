@@ -27,6 +27,7 @@ public:
 
 	int	GetPower();
 	StoneType GetType();
+	int GetEpUsage();
 
 	void Show();
 	void Hide();
