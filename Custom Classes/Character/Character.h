@@ -22,7 +22,7 @@ public:
     void Hide();
     void Show();
 
-    void Attack(Stone* curStone);
+    void Action(Stone* curStone);
     void SufferDamage(int value);
     void RegenEp() {currentEp += regenEp;}
 

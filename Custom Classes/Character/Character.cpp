@@ -83,15 +83,16 @@ void Character::Show()
     sprite->runAction(fadeIn);
 }
 
-void Character::Attack(Stone* curStone)
+void Character::Action(Stone* curStone)
 {
-    sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::PHYSICAL_ATTACK_ANIM));
+    sprite->setTexture("Images/" + GetSpriteName(type, (CharAnim)curStone->GetType()));
     sprite->setContentSize(Size(300, 300));
 
     Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
 
     auto moveFront = MoveTo::create(actionTime, originPos + moveDistance);
+    auto moveBack = MoveTo::create(actionTime, originPos - moveDistance);
     auto moveOrigin = MoveTo::create(actionTime, originPos);
 
     auto back = CallFunc::create([=]()->void {sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::IDLE_ANIM));
@@ -110,19 +111,16 @@ void Character::Attack(Stone* curStone)
 
 void Character::SufferDamage(int value)
 {
-    if (value < 0)
-        return;
+    if (value < 0) return;
 
-    sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DAMAGE_ANIM));
+    if(currentHp - value > 0) sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DAMAGE_ANIM));
+    else if(currentHp - value <= 0) sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DEAD_ANIM));
     sprite->setContentSize(Size(300, 300));
 
-    /*currentHp -= value;*/
-    currentHp -= value;
-    stat->SetHpGauge(maxHp, currentHp);
-    stat->SetNpGauge(maxNp, currentNp);
-
+#pragma region Animation
     Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
+    auto moveFront = MoveTo::create(actionTime, originPos + moveDistance);
     auto moveBack = MoveTo::create(actionTime, originPos - moveDistance);
     auto moveOrigin = MoveTo::create(actionTime, originPos);
 
@@ -133,6 +131,17 @@ void Character::SufferDamage(int value)
     AudioEngine::play2d(Sound_Hit, false, 0.1f);
 
     sprite->runAction(moveSeq);
+#pragma endregion
+#pragma region MyRegion
+    currentHp -= value;
+
+    //Getint if hostileType is Physical of magic attack
+    //if(hostileType < 2) { currentHp -= value;}
+    currentNp -= value/2;
+
+	stat->SetHpGauge(maxHp, currentHp);
+	stat->SetNpGauge(maxNp, currentNp);
+#pragma endregion
 }
 
 string Character::GetSpriteName(CharType name, CharAnim anim)
@@ -151,21 +160,13 @@ string Character::GetSpriteName(CharType name, CharAnim anim)
     string targetAnim = "";
     switch (anim)
     {
-    case IDLE_ANIM:
-        targetAnim = "Standing";
-        break;
-    case PHYSICAL_ATTACK_ANIM:
-        targetAnim = "PA";
-        break;
-    case MAGIC_ATTACK_ANIM:
-        targetAnim = "MA";
-        break;
-    case DAMAGE_ANIM:
-        targetAnim = "Hit";
-        break;
-    case DEAD_ANIM:
-        // º¸·ù
-        break;
+    case PHYSICAL_ATTACK_ANIM: targetAnim = "PA"; break;
+    case MAGIC_ATTACK_ANIM: targetAnim = "MA";  break;
+    case GUARD_ANIM: targetAnim = "GD"; break;
+    case DODGE_ANIM: targetAnim = "DG"; break;
+    case DAMAGE_ANIM: targetAnim = "Hit"; break;
+    case IDLE_ANIM: targetAnim = "Standing"; break;
+    case DEAD_ANIM: break;
     } 
 
 
