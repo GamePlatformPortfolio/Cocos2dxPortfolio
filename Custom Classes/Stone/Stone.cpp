@@ -134,7 +134,7 @@ void Stone::SetPowerAndEpUsage() {
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(5, 10);
+			power = GetRanValueInRange(5, 9);
 			epUsage = 4;
 			break;
 		}
@@ -173,6 +173,10 @@ bool Stone::GetSelect()
 int Stone::GetPower()
 {
 	return power;
+}
+
+int Stone::GetEpUsage() {
+	return epUsage;
 }
 
 StoneType Stone::GetType()

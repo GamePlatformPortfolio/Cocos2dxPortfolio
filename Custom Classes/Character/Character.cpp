@@ -12,8 +12,9 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
     this->type = type;
 
     maxHp = 10; currentHp = maxHp;
-    maxEp = 10; currentEp = maxEp;
+    maxEp = 20; currentEp = maxEp;
     maxNp = 10; currentNp = maxNp;
+    regenEp = 5;
 
     this->originPos = pos;
 

@@ -34,3 +34,8 @@ enum StoneTier
 	UNIQUE,
 	EPIC
 };
+
+enum UpdateType {
+	Selection,
+	Result
+};

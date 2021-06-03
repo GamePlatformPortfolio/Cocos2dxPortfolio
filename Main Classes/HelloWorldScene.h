@@ -7,6 +7,7 @@
 #include "Custom Classes/Character/Character.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
 #include "Custom Classes/StatPanel/StatPanel.h"
+#include "Custom Classes/Character/EpPanel.h"
 
 #include "Custom Classes/Stone/Stone.h"
 #include "Custom Classes/Stone/StonePanel.h"
@@ -39,6 +40,8 @@ public:
 
     StatPanel* playerStat;
     StatPanel* enemyStat;
+
+    EpPanel* epDisplay;
 
     // About Touch Event 
     Menu* pMenu;
