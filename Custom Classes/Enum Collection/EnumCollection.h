@@ -34,3 +34,7 @@ enum StoneTier
 	UNIQUE,
 	EPIC
 };
+enum CharState
+{
+	IDLE, ATTACK, DAMAGE
+};

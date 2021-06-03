@@ -1,29 +1,31 @@
 #include "Stone.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
 
+#pragma region Function
 Stone::Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size)
 {
 	this->type = type;
 	this->tier = tier;
 
-	//--------------스프라이트 생성 / 세팅
-	InitSprite(root);			
-	sprite->setContentSize(Size(size, size));
-	sprite->setPosition(pos);
+	// 이미지 초기화
+	InitSprite(root);
+	stoneImg->setContentSize(Size(size, size));
+	stoneImg->setPosition(pos);
 
-	//--------------등급별 주사위값 세팅
+	// 등급별 주사위값 설정
 	SetPowerAndEpUsage();
 
-	//활성화/비활성화 상태 색 설정
-	this->power = power;
-	this->isSelect = false;
+	// 활성화/비활성화 상태 색 설정
+	this->powerValue = powerValue;
+	this->state = StoneState::NONE_SELECTED;
 
-	powerText = Label::createWithSystemFont(to_string(power), "", fontSize);
-	powerText->setColor(Color3B::BLACK);
-	powerText->setPosition(Vec2(size / 2, size / 2));
-	sprite->addChild(powerText);
+	power = Label::createWithSystemFont(to_string(powerValue), "", DEFAULT_FONT_SIZE);
+	power->setColor(Color3B::BLACK);
+	power->setPosition(Vec2(size / 2, size / 2));
+	power->setVisible(false);
 
-	ChangeState();
+	stoneImg->addChild(power);
+
+	UpdateStoneState();
 }
 
 Stone::~Stone()
@@ -31,21 +33,7 @@ Stone::~Stone()
 
 }
 
-Sprite* Stone::GetSprite()
-{
-	return sprite;
-}
-
-//Return Random Value between front and rear
-int Stone::GetRanValueInRange(int front, int rear) {
-	//return (rand() % (rear - front + 1)) + front;
-	std::random_device rd;
-	std::mt19937_64 gen(rd());
-	std::uniform_int_distribution<int> dis(front, rear);
-	return dis(gen);
-}
-
-void Stone::InitSprite(string root) 
+void Stone::InitSprite(string root)
 {
 	string filename = "Stn_";
 	//----------------------스톤 타입(물공, 마공, 방어, 회피)
@@ -61,32 +49,39 @@ void Stone::InitSprite(string root)
 	//------------최종 결과물 예시 : "Stn_PA_N.png"
 
 	//스프라이트 생성 / 세팅
-	sprite = Sprite::create(root + "Stone/" + filename);
+	stoneImg = Sprite::create(root + "Stone/" + filename);
 
-	InitInformSprite();
+	InitInformImg();
+}
 
+int Stone::GetRanValueInRange(int front, int rear)
+{
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<int> dis(front, rear);
+	return dis(gen);
 }
 
 void Stone::SetPowerAndEpUsage() {
 	if (type == StoneType::GUARD) {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 4);
+			powerValue = GetRanValueInRange(1, 4);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(2, 6);
+			powerValue = GetRanValueInRange(2, 6);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(3, 6);
+			powerValue = GetRanValueInRange(3, 6);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(4, 8);
+			powerValue = GetRanValueInRange(4, 8);
 			epUsage = 4;
 			break;
 		}
@@ -95,22 +90,22 @@ void Stone::SetPowerAndEpUsage() {
 	else if (type == StoneType::DODGE) {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 6);
+			powerValue = GetRanValueInRange(1, 6);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(2, 6);
+			powerValue = GetRanValueInRange(2, 6);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(2, 8);
+			powerValue = GetRanValueInRange(2, 8);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(4, 8);
+			powerValue = GetRanValueInRange(4, 8);
 			epUsage = 5;
 			break;
 		}
@@ -119,22 +114,22 @@ void Stone::SetPowerAndEpUsage() {
 	else {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 5);
+			powerValue = GetRanValueInRange(1, 5);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(1, 8);
+			powerValue = GetRanValueInRange(1, 8);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(3, 8);
+			powerValue = GetRanValueInRange(3, 8);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(5, 10);
+			powerValue = GetRanValueInRange(5, 10);
 			epUsage = 4;
 			break;
 		}
@@ -142,75 +137,51 @@ void Stone::SetPowerAndEpUsage() {
 	}
 }
 
-void Stone::ChangeState()
+void Stone::UpdateStoneState()
 {
-	if (isSelect)
+	switch (state)
 	{
-		sprite->setColor(selectedColor);
+	case StoneState::NONE_SELECTED:
+		stoneImg->setColor(NORMAL_COLOR);
+		break;
+	case StoneState::SELECTED:
+		stoneImg->setColor(SELECT_COLOR);
+		break;
+	}
+}
+
+void Stone::ChangeColorOnly()
+{
+	stoneImg->setColor(NORMAL_COLOR);
+}
+
+void Stone::ShowStone(bool showPower)
+{
+	auto fadeIn = FadeIn::create(DEFAULT_ACTION_TIME);
+
+	stoneImg->runAction(fadeIn);
+
+	if (showPower)
+	{
+		power->setVisible(true);
+		power->runAction(fadeIn->clone());
 	}
 	else
-	{
-		sprite->setColor(color);
-	}
+		power->setVisible(false);
 }
 
-void Stone::ChangeOnlyColor()
+void Stone::HideStone()
 {
-	sprite->setColor(color);
+	// 이미지도 텍스트도 가리고
+	auto fadeOut = FadeOut::create(DEFAULT_ACTION_TIME);
+
+	stoneImg->runAction(fadeOut);
+
+	if (power->isVisible())
+		power->runAction(fadeOut->clone());
 }
 
-void Stone::Select(bool value)
-{
-	isSelect = value;
-	ChangeState();
-}
-
-bool Stone::GetSelect()
-{
-	return isSelect;
-}
-
-int Stone::GetPower()
-{
-	return power;
-}
-
-StoneType Stone::GetType()
-{
-	return type;
-}
-
-void Stone::Show()
-{
-	auto fadeIn = FadeIn::create(actionTime);
-
-	sprite->runAction(fadeIn->clone());
-	powerText->runAction(fadeIn->clone());
-}
-
-void Stone::Hide()
-{
-	auto fadeOut = FadeOut::create(actionTime);
-
-	sprite->runAction(fadeOut->clone());
-	powerText->runAction(fadeOut->clone());
-}
-
-void Stone::ShowPower()
-{
-	auto fadeIn = FadeIn::create(actionTime);
-
-	powerText->runAction(fadeIn);
-}
-
-void Stone::HidePower()
-{
-	auto fadeOut = FadeOut::create(actionTime);
-
-	powerText->runAction(fadeOut);
-}
-
-void Stone::InitInformSprite()
+void Stone::InitInformImg()
 {
 	string name = "";
 
@@ -250,24 +221,38 @@ void Stone::InitInformSprite()
 
 	name += ".png";
 
-	informSprite = Sprite::create("Images/Value/" + name);
-	informSprite->setVisible(false);
+	stoneInformImg = Sprite::create("Images/Value/" + name);
+	stoneInformImg->setVisible(false);
 
-	sprite->addChild(informSprite);
+	stoneImg->addChild(stoneInformImg);
 
-
-	informSprite->setPosition(Vec2(0, 75));
+	stoneInformImg->setPosition(Vec2(0, DEFAULT_INFORM_VERTICAL_OFFSET));
 }
+#pragma endregion
 
-void Stone::ShowInform()
-{
-	informSprite->setVisible(true);
-}
 
-void Stone::HideInform()
-{
-	informSprite->setVisible(false);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

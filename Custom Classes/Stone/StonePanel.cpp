@@ -11,7 +11,7 @@ StonePanel::StonePanel(CharType targetType, string root, Vec2 pos, Size size)
 
 	this->target = targetType;
 
-	this->firstInit = true;
+	firstInit = true;
 
 	InitStones(size, root);
 }
@@ -37,8 +37,8 @@ void StonePanel::InitStones(Size size, string root)
 			Vec2::ZERO,
 			50
 		));
-		allStones[i]->GetSprite()->setVisible(false);
-		panelSprite->addChild(allStones[i]->GetSprite());
+		allStones[i]->stoneImg->setVisible(false);
+		panelSprite->addChild(allStones[i]->stoneImg);
   }
 
 	selectedStones.clear();
@@ -48,14 +48,15 @@ void StonePanel::InitStones(Size size, string root)
 	for (int i = 0; i < handAmount; i++)
 	{
 		handStones.push_back(allStones[i]);
-		handStones[i]->GetSprite()->setVisible(true);
-		handStones[i]->GetSprite()->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
+		handStones[i]->stoneImg->setVisible(true);
+		handStones[i]->stoneImg->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
 	}	
 }
 
 void StonePanel::SelectStone(int index)
 {
-	handStones[index]->Select(true);
+	handStones[index]->state = StoneState::SELECTED;
+	handStones[index]->UpdateStoneState();
 
 	selectedStones.push_back(handStones[index]);
 }
@@ -68,7 +69,8 @@ void StonePanel::UnSelectedStone(int index)
 	it = find(selectedStones.begin(), selectedStones.end(), target);
 	if (it != selectedStones.end())
 	{
-		target->Select(false);
+		target->state = StoneState::NONE_SELECTED;
+		target->UpdateStoneState();
 
 		selectedStones.erase(it);
 	}
@@ -76,7 +78,7 @@ void StonePanel::UnSelectedStone(int index)
 
 void StonePanel::HideAll()
 {
-	auto fadeOut = FadeOut::create(actionTime);
+	auto fadeOut = FadeOut::create(DEFAULT_ACTION_TIME);
 
 	// 패널을 숨깁니다.
 	panelSprite->runAction(fadeOut->clone());
@@ -84,13 +86,13 @@ void StonePanel::HideAll()
 	// 손에 든 모든 스톤을 숨깁니다.
 	for (Stone* stone : handStones)
 	{
-		stone->Hide();
+		stone->HideStone();
 	}
 }
 
 void StonePanel::ShowAll()
 {
-	auto fadeIn = FadeIn::create(actionTime);
+	auto fadeIn = FadeIn::create(DEFAULT_ACTION_TIME);
 
 	// 패널을 보입니다.
 	panelSprite->runAction(fadeIn->clone());
@@ -101,24 +103,24 @@ void StonePanel::ShowAll()
 	selectedStones.clear();
 	handStones.clear();
 
+	for (Stone* stone : allStones)
+	{
+		stone->state = StoneState::NONE_SELECTED;
+	}
+
 	// 손에 든 모든 스톤을 보입니다.
 	for (int i = 0; i < handAmount; i++)
 	{
-		allStones[i]->Show();
-		handStones.push_back(allStones[i]);
-
-		handStones[i]->GetSprite()->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
-	}
-
-	for (Stone* stone : allStones)
-	{
-		stone->Select(false);
+		handStones.push_back(allStones[i]);		
+		handStones[i]->stoneImg->setPosition(Vec2(hOffset * (i + 1), vOffset)); // hOffset * 1 부터 시작해야 함
 	}
 
 	for (Stone* stone : handStones)
 	{
-		stone->GetSprite()->setVisible(true);
+		stone->stoneImg->setVisible(true);
+		stone->ShowStone(false);
 	}
+
 }
 
 Stone* StonePanel::GetCurrentStone()
@@ -148,12 +150,10 @@ Stone* StonePanel::PopStone()
 
 void StonePanel::ShowCurrentStone()
 {
-	
-
 	// 스톤들의 상태는 변경하지 않고 색만 바꿉니다.
 	for (Stone* stone : handStones)
 	{
-		stone->ChangeOnlyColor();
+		stone->ChangeColorOnly();
 	}
 
 	// 선택된 스톤들 중 맨 앞 스톤을 추출합니다.
@@ -168,8 +168,8 @@ void StonePanel::ShowCurrentStone()
 	Vec2 targetPos = Vec2(panelSprite->getContentSize().width / 2, panelSprite->getContentSize().height / 2);
 
 	// 패널의 중앙으로 이동시킨 후에 표시합니다.
-	currentStone->GetSprite()->setPosition(targetPos);
-	currentStone->Show();
+	currentStone->stoneImg->setPosition(targetPos);
+	currentStone->ShowStone(true);
 }
 
 void StonePanel::HideCurrentStone()
@@ -180,7 +180,7 @@ void StonePanel::HideCurrentStone()
 	{
 		auto hide = CallFunc::create([=]()->void 
 			{ 
-				currentStone->Hide();
+				currentStone->HideStone();
 			});
 
 		auto moveToLast = CallFunc::create([=]()->void
@@ -197,7 +197,7 @@ void StonePanel::HideCurrentStone()
 
 		auto hideSeq = Sequence::create(hide, DelayTime::create(0.2f), moveToLast, nullptr);
 
-		currentStone->GetSprite()->runAction(hideSeq);		
+		currentStone->stoneImg->runAction(hideSeq);
 	}
 }
 

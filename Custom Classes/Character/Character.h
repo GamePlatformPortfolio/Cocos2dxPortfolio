@@ -20,13 +20,17 @@ public:
     void Hide();
     void Show();
 
-    void Attack(Stone* curStone);
+    void Attack(Scene* scene, Stone* curStone);
     void SufferDamage(int value);
 
     const int GetMaxHp();
     const int GetCurrentHp();
 
     string GetSpriteName(CharType type, CharAnim anim);
+    float noise(int x, int y);
+    void ChangeState(CharState state);
+
+    void CameraShake(Scene* scene);
 #pragma region PRIVATE
 private:
     Sprite* sprite;
@@ -35,6 +39,8 @@ private:
     Vec2 originPos;
 
     const float actionTime = 0.5f;
+
+    CharState state;
 
     int maxHp;
     int currentHp;
