@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Custom Classes/Stone/Stone.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
+#include "CustomClasses/Stone/Stone.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
 #include "cocos2d.h"
 #include <list>
 #include <iostream>

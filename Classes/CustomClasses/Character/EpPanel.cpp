@@ -1,4 +1,5 @@
-#include "EpPanel.h"
+//#include "EpPanel.h"
+#include "CustomClasses/Character/EpPanel.h"
 
 void EpPanel::Update(UpdateType type) {
 	if (stonePanel_target->selectedStones.size() == 0) {

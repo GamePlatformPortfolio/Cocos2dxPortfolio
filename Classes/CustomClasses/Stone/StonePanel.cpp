@@ -1,5 +1,5 @@
 #include "StonePanel.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
 
 StonePanel::StonePanel(CharType targetType, string root, Vec2 pos, Size size)
 {

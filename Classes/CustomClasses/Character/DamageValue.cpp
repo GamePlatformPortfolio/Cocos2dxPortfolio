@@ -1,4 +1,4 @@
-#include "Custom Classes/Character/DamageValue.h"
+#include "CustomClasses/Character/DamageValue.h"
 
 int DamageValue::HpDamage(float num) {
 	if (num == 0) return hpDamage;

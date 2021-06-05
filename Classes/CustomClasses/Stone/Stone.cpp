@@ -1,5 +1,5 @@
 #include "Stone.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
 
 Stone::Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size)
 {

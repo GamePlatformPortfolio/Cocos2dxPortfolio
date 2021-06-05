@@ -1,4 +1,4 @@
-#include "Custom Classes/StatPanel/StatPanel.h"
+#include "CustomClasses/StatPanel/StatPanel.h"
 
 StatPanel::StatPanel(CharType type, string root) {
 	//Set StatusPanel Image by type

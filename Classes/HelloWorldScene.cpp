@@ -344,10 +344,10 @@ void HelloWorld::SetDamageValue(Stone* attacker, Stone* receiver, DamageValue* d
 	}
 	else if (attacker->GetType() == StoneType::DODGE) {
         if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
-            damage->NpDamage(attacker->GetPower() * -1);
+            damage->NpDamage((attacker->GetPower() * -1));
         }
 		else if (receiver->GetType() == StoneType::GUARD) {
-            damage->NpDamage(attacker->GetPower() * -1);
+            damage->NpDamage((attacker->GetPower() * -1));
 		}
         else {}
 		}
