@@ -3,6 +3,7 @@
 void EpPanel::Update(UpdateType type) {
 	if (stonePanel_target->selectedStones.size() == 0) {
 		epText->setString(StringUtils::format("%d", character_target->GetCurrentEp()));
+		predEp = 0;
 		return;
 	}
 	predEp = 0;

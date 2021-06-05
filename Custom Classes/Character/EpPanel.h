@@ -9,7 +9,7 @@ private:
 	cocos2d::Label* epText;
 	StonePanel* stonePanel_target;
 	Character* character_target;
-	int predEp = 0;
+	
 
 public:
 	EpPanel(StonePanel* panel, Character* character) {
@@ -24,8 +24,9 @@ public:
 		bgSprite->setPosition(Vec2(panel->panelSprite->getPosition().x, panel->panelSprite->getPosition().y + 50));
 	}
 	void Update(UpdateType type);
-	cocos2d::Sprite* GetSprite() { return bgSprite; };
-	int GetPredEP() { return predEp; }
+	cocos2d::Sprite* GetSprite() noexcept { return bgSprite; };
+	int GetPredEP() noexcept { return predEp; }
 	void HideAll();
 	void ShowAll();
+	int predEp = 0;
 };
