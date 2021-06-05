@@ -3,6 +3,7 @@
 #include "Custom Classes/StatPanel/StatPanel.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
 #include "Custom Classes/Stone/Stone.h"
+#include "Custom Classes/Character/DamageValue.h"
 #include "cocos2d.h"
 
 using namespace cocos2d;
@@ -22,8 +23,8 @@ public:
     void Hide();
     void Show();
 
-    void Action(Stone* curStone);
-    void SufferDamage(int value);
+    void Action(CharType targetType, Stone* curStone, DamageValue* damage);
+    void SufferDamage(DamageValue* damage);
     void RegenEp() {currentEp += regenEp;}
 
     int GetMaxHp()        {return maxHp;}
@@ -65,5 +66,6 @@ private:
     string Sound_DG; //Sound of Dodge
     string Sound_AD; //Attack Draw
     string Sound_Hit;
+    string Sound_Guard;
 #pragma endregion
 };

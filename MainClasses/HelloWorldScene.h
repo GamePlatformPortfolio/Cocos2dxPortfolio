@@ -8,6 +8,7 @@
 #include "Custom Classes/Enum Collection/EnumCollection.h"
 #include "Custom Classes/StatPanel/StatPanel.h"
 #include "Custom Classes/Character/EpPanel.h"
+#include "Custom Classes/Character/DamageValue.h"
 
 #include "Custom Classes/Stone/Stone.h"
 #include "Custom Classes/Stone/StonePanel.h"
@@ -59,7 +60,10 @@ public:
 
     // About Game Battle
     void StartBattle(Ref* pSender);
-    void CompareStone(Stone* playerStone, Stone* enemyStone);
+    void ActivateCurStone(Stone* playerStone, Stone* enemyStone);
+    CharType SetTarget(Stone* playerStone, Stone* enemyStone);
+    void SetDamageValue(Stone* attacker, Stone* receiver, DamageValue* damage);
+    Character* GetCharWithEnum(CharType type);
 
     // ETC
     Size GetScreenSize();

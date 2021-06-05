@@ -24,7 +24,7 @@ enum Direction
 };
 enum StoneType 
 {
-	PHYSICAL_ATTACK = 0,
+	PHYSICAL_ATTACK,
 	MAGIC_ATTACK,
 	GUARD,
 	DODGE

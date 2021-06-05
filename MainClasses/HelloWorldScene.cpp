@@ -148,7 +148,7 @@ void HelloWorld::onTouchEnded(Touch* touch, Event* event)
     auto touchPoint = touch->getLocation();
 
     for (int i = 0; i < handAmount; i++) { 
-    playerStone->handStones[i]->HideInform(); 
+        playerStone->handStones[i]->HideInform(); 
     }
 }
 
@@ -182,7 +182,7 @@ void HelloWorld::StartBattle(Ref* pSender)
         });
     auto compareStone = CallFunc::create([=]()->void
         {
-            CompareStone(playerStone->GetCurrentStone(), enemyStone->GetCurrentStone());
+            ActivateCurStone(playerStone->GetCurrentStone(), enemyStone->GetCurrentStone());
         });
     auto hideCurStone = CallFunc::create([=]()->void
         {
@@ -240,9 +240,9 @@ void HelloWorld::StartBattle(Ref* pSender)
             showCurStone, DelayTime::create(1.0f),
             compareStone, DelayTime::create(2.0f),
             hideCurStone, DelayTime::create(1.0f),
-            show, DelayTime::create(0.5f),
-            end, DelayTime::create(0.5f),
-            regenEp, updateEpPanel,
+            show,         DelayTime::create(0.5f),
+            end,          DelayTime::create(0.5f),
+            regenEp,      updateEpPanel,
             nullptr);
         break;
     case 3:
@@ -258,8 +258,8 @@ void HelloWorld::StartBattle(Ref* pSender)
             showCurStone, DelayTime::create(1.0f),
             compareStone, DelayTime::create(2.0f),
             hideCurStone, DelayTime::create(1.0f),
-            show, DelayTime::create(0.5f),
-            end, DelayTime::create(0.5f),
+            show,         DelayTime::create(0.5f),
+            end,          DelayTime::create(0.5f),
             regenEp, updateEpPanel,
             nullptr);
         break;
@@ -285,60 +285,101 @@ void HelloWorld::StartBattle(Ref* pSender)
             nullptr);
         break;
     }
-
 #pragma endregion
+
     player->UseEp(epDisplay->GetPredEP());
+    this->runAction(battleSeq);
     epDisplay->Update(UpdateType::Result);
-    this->runAction(battleSeq);    
 }
 
-void HelloWorld::CompareStone(Stone* playerStone, Stone* enemyStone)
-{
-    int damageValue = playerStone->GetPower() - enemyStone->GetPower();
-    if (damageValue > 0) {
-        player->Action(playerStone);
-        enemy->SufferDamage(damageValue);
-        return;
-    }
-    else if (damageValue < 0) {
-        enemy->Action(enemyStone);
-        player->SufferDamage(damageValue * (-1));
-        return;
-    }
-    else {
-        //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
-        return;
-    }
+void HelloWorld::ActivateCurStone(Stone* playerStone, Stone* enemyStone) {
+    //int damageValue = playerStone->GetPower() - enemyStone->GetPower();
     //if (damageValue > 0) {
-
+    //    player->Action(playerStone);
     //    enemy->SufferDamage(damageValue);
+    //    return;
     //}
     //else if (damageValue < 0) {
-
-    //    player->SufferDamage(damageValue);
+    //    enemy->Action(enemyStone);
+    //    player->SufferDamage(damageValue * (-1));
+    //    return;
     //}
     //else {
-    //    
-    //    //Conflict Animation
+    //    //부딫혀서 충돌하는 애니메이션 있으면 좋을것 같다 ㅎㅎ
+    //    return;
     //}
+    CharType target = SetTarget(playerStone, enemyStone);
+    DamageValue* damage = new DamageValue();
+    if (enemyStone->GetPower() > playerStone->GetPower()) SetDamageValue(enemyStone, playerStone, damage);
+    else if (enemyStone->GetPower() < playerStone->GetPower()) SetDamageValue(playerStone, enemyStone, damage);
 
-
+    enemy->Action(target, enemyStone, damage); 
+    player->Action(target, playerStone, damage);
 }
+
+void HelloWorld::SetDamageValue(Stone* attacker, Stone* receiver, DamageValue* damage) {
+	if (attacker->GetType() == StoneType::PHYSICAL_ATTACK || attacker->GetType() == StoneType::MAGIC_ATTACK) {
+		if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
+			damage->HpDamage(attacker->GetPower()); damage->NpDamage(damage->HpDamage() / 2);
+		}
+		else if (receiver->GetType() == StoneType::GUARD) {
+			damage->HpDamage(attacker->GetPower() - receiver->GetPower());
+            damage->NpDamage((float)(damage->HpDamage() / 2));
+		}
+		else if (receiver->GetType() == StoneType::DODGE) {
+            damage->HpDamage(attacker->GetPower());
+            damage->NpDamage(damage->HpDamage() / 2);
+		}
+	}
+	else if (attacker->GetType() == StoneType::GUARD) {
+		if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
+			damage->NpDamage(receiver->GetPower() / 2);
+		}
+		else if (receiver->GetType() == StoneType::GUARD) {
+            damage->NpDamage((attacker->GetPower() - receiver->GetPower()) / 2);
+		}
+		else if (receiver->GetType() == StoneType::DODGE) {
+            damage->NpDamage(attacker->GetPower());
+		}
+	}
+	else if (attacker->GetType() == StoneType::DODGE) {
+        if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
+            damage->NpDamage(attacker->GetPower() * -1);
+        }
+		else if (receiver->GetType() == StoneType::GUARD) {
+            damage->NpDamage(attacker->GetPower() * -1);
+		}
+        else {}
+		}
+	}
 
 Size HelloWorld::GetScreenSize()
 {
     Size screenSize = Director::getInstance()->getVisibleSize();
-
     return screenSize;
 }
 
 Vec2 HelloWorld::GetScreenMiddlePos()
 {
     Size screenSize = Director::getInstance()->getVisibleSize();
-
     Vec2 middlePos = Vec2(screenSize.width / 2, screenSize.height / 2);
-
     return middlePos;
 }
 
+CharType HelloWorld::SetTarget(Stone* playerStone, Stone* enemyStone) {
+    if(playerStone->GetPower() - enemyStone->GetPower() > 0) {
+        if(playerStone->GetType() == StoneType::DODGE) return CharType::PLAYER;
+        else return CharType::ENEMY;
+    }
+    else if (playerStone->GetPower() - enemyStone->GetPower() < 0) {
+        if (enemyStone->GetType() == StoneType::DODGE) return CharType::ENEMY;
+        else    return CharType::PLAYER;
+    }
+    else return CharType::NONE;
+}
 
+Character* HelloWorld::GetCharWithEnum(CharType type) {
+    if (type == CharType::PLAYER) return player;
+    else if (type == CharType::ENEMY) return enemy;
+    else return nullptr;
+}
