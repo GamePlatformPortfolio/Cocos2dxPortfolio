@@ -1,4 +1,4 @@
-#include "Custom Classes/Character/Character.h"
+#include "CustomClasses/Character/Character.h"
 #include <AudioEngine.h>
 
 Character::Character(CharType type, string root, Vec2 pos, Size size)

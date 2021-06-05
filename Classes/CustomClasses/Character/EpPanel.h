@@ -1,7 +1,7 @@
 #pragma once
 #include "cocos2d.h"
-#include "Custom Classes/Stone/StonePanel.h"
-#include "Custom Classes/Character/Character.h"
+#include "CustomClasses/Stone/StonePanel.h"
+#include "CustomClasses/Character/Character.h"
 
 class EpPanel {
 private:

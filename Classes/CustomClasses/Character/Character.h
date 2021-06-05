@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Custom Classes/StatPanel/StatPanel.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
-#include "Custom Classes/Stone/Stone.h"
-#include "Custom Classes/Character/DamageValue.h"
+#include "CustomClasses/StatPanel/StatPanel.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
+#include "CustomClasses/Stone/Stone.h"
+#include "CustomClasses/Character/DamageValue.h"
 #include "cocos2d.h"
 
 using namespace cocos2d;

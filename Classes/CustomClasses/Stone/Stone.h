@@ -1,6 +1,6 @@
 #pragma once
 #include "cocos2d.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
 #include <random>
 
 using namespace cocos2d;

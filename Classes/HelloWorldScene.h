@@ -4,14 +4,14 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "Custom Classes/Character/Character.h"
-#include "Custom Classes/Enum Collection/EnumCollection.h"
-#include "Custom Classes/StatPanel/StatPanel.h"
-#include "Custom Classes/Character/EpPanel.h"
-#include "Custom Classes/Character/DamageValue.h"
+#include "CustomClasses/Character/Character.h"
+#include "CustomClasses/EnumCollection/EnumCollection.h"
+#include "CustomClasses/StatPanel/StatPanel.h"
+#include "CustomClasses/Character/EpPanel.h"
+#include "CustomClasses/Character/DamageValue.h"
 
-#include "Custom Classes/Stone/Stone.h"
-#include "Custom Classes/Stone/StonePanel.h"
+#include "CustomClasses/Stone/Stone.h"
+#include "CustomClasses/Stone/StonePanel.h"
 
 using namespace cocos2d;
 using namespace std;
