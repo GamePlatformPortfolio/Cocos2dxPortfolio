@@ -1,60 +1,63 @@
 #pragma once
-
-#include <random>
-
 #include "cocos2d.h"
 #include "Custom Classes/Enum Collection/EnumCollection.h"
+#include <random>
 
 using namespace cocos2d;
 using namespace std;
 
-#define NORMAL_COLOR					Color3B::WHITE
-#define SELECT_COLOR					Color3B::GRAY
-
-#define DEFAULT_ACTION_TIME				0.2f
-#define DEFAULT_FONT_SIZE				24
-#define DEFAULT_INFORM_VERTICAL_OFFSET  75
-
-typedef enum StoneState { NONE_SELECTED, SELECTED };
-
-typedef struct Stone
+class Stone
 {
-#pragma region Variable
-	Sprite* stoneImg;
-	Sprite* stoneInformImg;
+public:
+	Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size);
+	~Stone();
 
-	Label* power;
-	int powerValue;
+	void SetPowerAndEpUsage();
+	void InitSprite(string root);
+	
+	Sprite* GetSprite();
 
-	StoneState state;
+	int GetRanValueInRange(int, int);
 
-	// StoneType, StoneTier, epUsage : O - pera
+	void ChangeState();
+	void ChangeOnlyColor();
+
+	void Select(bool value);
+	bool GetSelect();
+
+	int	GetPower();
+	StoneType GetType();
+
+	void Show();
+	void Hide();
+
+	void ShowPower();
+	void HidePower();
+
+	void InitInformSprite();
+	void ShowInform();
+	void HideInform();
+
+#pragma region PRIVATE
+private:
+	Sprite* sprite;
+	Label* powerText;
+
+	Sprite* informSprite;
+
+	const Color3B color = Color3B::WHITE;
+	const Color3B selectedColor = Color3B::GRAY;
+
 	StoneType type;
 	StoneTier tier;
 
 	int epUsage;
-#pragma endregion
 
-#pragma region Function
-	Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size);
-	~Stone();
+	int power;
+	const int fontSize = 24;
+	const float actionTime = 0.2f;
 
-	// InitSprite, GetRanValueInRange, SetPowerAndEpUsage : O - pera
-	void InitSprite(string root);
-
-	int GetRanValueInRange(int, int);
-
-	void SetPowerAndEpUsage();
-	// --------------------
-
-	void UpdateStoneState();
-	void ChangeColorOnly();
-
-	void ShowStone(bool showPower);
-	void HideStone();
-
-	void InitInformImg();
-
+	bool isSelect;
 #pragma endregion
 };
 

@@ -58,5 +58,6 @@ private:
 	CharType target;
 
 	bool firstInit;
+	const float actionTime = 0.5f;
 };
 
