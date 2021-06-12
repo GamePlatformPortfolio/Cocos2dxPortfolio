@@ -158,7 +158,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	case StoneType::PHYSICAL_ATTACK: {
 
 		auto phyattack = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::PHYSICAL_ATTACK_ANIM));
-		sprite->setContentSize(Size(320, 300));
+		sprite->setContentSize(Size(300, 300));
 		});
 
 		AudioEngine::play2d(Sound_PA, false, 0.1f);
@@ -174,7 +174,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 		});
 
 		auto magicmotion2 = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::MAGIC_ATTACK_ANIM_2));
-		sprite->setContentSize(Size(350, 300));
+		sprite->setContentSize(Size(300, 300));
 		});
 
 		AudioEngine::play2d(Sound_MA, false, 0.1f);
@@ -186,7 +186,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	}break;
 	case StoneType::GUARD: { 
 		auto guardmotion = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::GUARD_ANIM));
-		sprite->setContentSize(Size(350, 300));
+		sprite->setContentSize(Size(300, 300));
 		});
 
 		AudioEngine::play2d(Sound_Guard, false, 0.1f);
