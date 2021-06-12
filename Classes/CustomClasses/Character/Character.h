@@ -38,11 +38,14 @@ public:
 
     string GetSpriteName(CharType type, CharAnim anim);
 
+
 #pragma region PRIVATE
 private:
     Sprite* sprite;
     CharType type;
     Direction dir;
+	//add
+	int angle; int backangle;
     Vec2 originPos;
 
     //friend class StatPanel;
