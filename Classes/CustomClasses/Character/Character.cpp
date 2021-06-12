@@ -25,6 +25,7 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
         {
             dir = Direction::RIGHT;
 			angle = -10; backangle = 10;
+			imagesizeX =475; imagesizeY = 410; //sprite size
             Sound_PA = "Craver_PA.mp3";
             Sound_MA = "Craver_MA.mp3";
             break;
@@ -33,6 +34,7 @@ Character::Character(CharType type, string root, Vec2 pos, Size size)
         {
             dir = Direction::LEFT;
 			angle = 10; backangle = -10;
+			imagesizeX = 800; imagesizeY = 400;
             Sound_PA = "Guardian_PA.mp3";
             Sound_MA = "Guardian_MA.mp3";
             break;
@@ -93,7 +95,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 			if (currentHp - damage->HpDamage() > 0) sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DAMAGE_ANIM));
 
 			else if (currentHp - damage->HpDamage() <= 0) sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DEAD_ANIM));
-			sprite->setContentSize(Size(300, 300));
+			sprite->setContentSize(Size(imagesizeX, imagesizeY));  
 
 			Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
@@ -110,10 +112,10 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 
 
 			auto back = CallFunc::create([=]()->void {sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::IDLE_ANIM));
-			sprite->setContentSize(Size(300, 300)); });
+			sprite->setContentSize(Size(imagesizeX, imagesizeY));    });
 
 			auto movemotion = CallFunc::create([=]()->void {sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::MOVE_ANIM));
-				sprite->setContentSize(Size(300, 300));
+				sprite->setContentSize(Size(imagesizeX, imagesizeY)); 
 			});
 
 			auto moveSeq = Sequence::create(
@@ -132,7 +134,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
         SufferDamage(damage);
 	}
 	sprite->setTexture("Images/" + GetSpriteName(type, (CharAnim)curStone->GetType()));
-	sprite->setContentSize(Size(300, 300));
+	sprite->setContentSize(Size(imagesizeX, imagesizeY));
 
 	Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
@@ -144,11 +146,11 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 
 	//motion
 	auto back = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::IDLE_ANIM));
-	    sprite->setContentSize(Size(300, 300)); 
+	sprite->setContentSize(Size(imagesizeX, imagesizeY));  
         });
 
 	auto movemotion = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::MOVE_ANIM));
-		sprite->setContentSize(Size(300, 300));
+	sprite->setContentSize(Size(imagesizeX, imagesizeY));   
 	});
 
 
@@ -158,7 +160,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	case StoneType::PHYSICAL_ATTACK: {
 
 		auto phyattack = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::PHYSICAL_ATTACK_ANIM));
-		sprite->setContentSize(Size(300, 300));
+		sprite->setContentSize(Size(imagesizeX, imagesizeY));  
 		});
 
 		AudioEngine::play2d(Sound_PA, false, 0.1f);
@@ -170,11 +172,11 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	}break;
 	case StoneType::MAGIC_ATTACK: { 
 		auto magicmotion1 = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::MAGIC_ATTACK_ANIM_1));
-		sprite->setContentSize(Size(300, 300));
+		sprite->setContentSize(Size(imagesizeX, imagesizeY)); 
 		});
 
 		auto magicmotion2 = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::MAGIC_ATTACK_ANIM_2));
-		sprite->setContentSize(Size(300, 300));
+		sprite->setContentSize(Size(imagesizeX, imagesizeY));  
 		});
 
 		AudioEngine::play2d(Sound_MA, false, 0.1f);
@@ -186,7 +188,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	}break;
 	case StoneType::GUARD: { 
 		auto guardmotion = CallFunc::create([=]()->void { sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::GUARD_ANIM));
-		sprite->setContentSize(Size(300, 300));
+		sprite->setContentSize(Size(imagesizeX, imagesizeY));   
 		});
 
 		AudioEngine::play2d(Sound_Guard, false, 0.1f);
@@ -199,7 +201,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	case StoneType::DODGE: { 
 		auto dodgemotion = CallFunc::create([=]()->void {
 			sprite->setTexture("Images/" + GetSpriteName(type, CharAnim::DODGE_ANIM));
-			sprite->setContentSize(Size(300, 300));
+			sprite->setContentSize(Size(imagesizeX, imagesizeY)); 
 		});
 
 		AudioEngine::play2d(Sound_DG, false, 0.1f);
@@ -230,10 +232,12 @@ void Character::SufferDamage(DamageValue* damage){
 string Character::GetSpriteName(CharType name, CharAnim anim)
 {
     string targetName = "";
+	int imagesize;
     switch (name)
     {
     case CharType::PLAYER:
         targetName = "Craver/Craver_";
+
         break;
     case CharType::ENEMY:
         targetName = "Guardian/Guardian_";

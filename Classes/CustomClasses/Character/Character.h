@@ -46,6 +46,8 @@ private:
     Direction dir;
 	//add
 	int angle; int backangle;
+	//imagessize
+	int imagesizeX; int imagesizeY;
     Vec2 originPos;
 
     //friend class StatPanel;
