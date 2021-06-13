@@ -1,5 +1,6 @@
 #include "CustomClasses/Character/DamageValue.h"
 
+<<<<<<< Updated upstream
 int DamageValue::HpDamage(float num) {
 	if (num == 0) return hpDamage;
 	hpDamage = num;
