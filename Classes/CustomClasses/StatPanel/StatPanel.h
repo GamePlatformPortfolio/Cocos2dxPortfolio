@@ -15,7 +15,7 @@ private:
 	LoadingBar* npGauge;
 
 public:
-	StatPanel(CharType type, string root);
+	StatPanel(CharType type);
 	void UpdateStat();
 	void SetHpGauge(int maxHp, int currentHp);
 	void SetNpGauge(int maxNp, int currentNp);

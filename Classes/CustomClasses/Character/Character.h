@@ -1,24 +1,28 @@
 #pragma once
 
-#include "CustomClasses/StatPanel/StatPanel.h"
-#include "CustomClasses/EnumCollection/EnumCollection.h"
-#include "CustomClasses/Stone/Stone.h"
-#include "CustomClasses/Character/DamageValue.h"
 #include "cocos2d.h"
+
+#include "CustomClasses/EnumCollection/EnumCollection.h"
+
+#include "CustomClasses/Stone/Stone.h"
+
+#include "CustomClasses/StatPanel/StatPanel.h"
+
+#include "CustomClasses/Character/DamageValue.h"
+
+#include <AudioEngine.h>
 
 using namespace cocos2d;
 using namespace cocos2d::experimental;
 using namespace std;
+
 class StatPanel;
 
 class Character
 {
 public:
-    Character(CharType type, string root, Vec2 pos, Size size);
+    Character(CharType type, Vec2 pos, Size size);
     ~Character();
-
-    Sprite* GetSprite();
-    CharType GetType();
 
     void Hide();
     void Show();
@@ -37,25 +41,24 @@ public:
     void UseEp(int epUsed) {currentEp -= epUsed;}
 
     string GetSpriteName(CharType type, CharAnim anim);
+    Sprite* GetSprite() noexcept { return sprite ? sprite : nullptr; }
+    CharType GetType() noexcept { return type; }
 
-
-#pragma region PRIVATE
+    void MatchImgSize(CharAnim anim);
 private:
+    const float actionTime = 0.5f;
+
+    bool isVictory = false;
+    bool isLose = false;
+
     Sprite* sprite;
+
     CharType type;
     Direction dir;
-	//add
-	int angle; int backangle;
-	//imagessize
-	int imagesizeX; int imagesizeY;
+
     Vec2 originPos;
 
-    //friend class StatPanel;
     StatPanel* stat;
-    //EpPanel* epDisplay;
-
-
-    const float actionTime = 0.5f;
 
     int maxHp;
     int currentHp;
@@ -72,5 +75,4 @@ private:
     string Sound_AD; //Attack Draw
     string Sound_Hit;
     string Sound_Guard;
-#pragma endregion
 };

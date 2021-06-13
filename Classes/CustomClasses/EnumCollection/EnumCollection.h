@@ -2,17 +2,12 @@
 
 enum CharType
 { 
-	NONE   = -1,
-	PLAYER =  0,
-	ENEMY  =  1
+	NONE, PLAYER, ENEMY 
 };
 enum CharAnim
 {
-	//add
-	MOVE_ANIM,
 	PHYSICAL_ATTACK_ANIM,
-	MAGIC_ATTACK_ANIM_1,
-	MAGIC_ATTACK_ANIM_2,
+	MAGIC_ATTACK_ANIM,
 	GUARD_ANIM,
 	DODGE_ANIM,
 	DAMAGE_ANIM,
@@ -34,13 +29,9 @@ enum StoneType
 };
 enum StoneTier 
 {
-	NORMAL,
-	RARE,
-	UNIQUE,
-	EPIC
+	NORMAL, RARE, UNIQUE, EPIC
 };
-
-enum UpdateType {
-	Selection,
-	Result
+enum UpdateType
+{
+	SELECTION, RESULT
 };

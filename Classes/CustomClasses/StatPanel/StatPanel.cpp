@@ -1,19 +1,19 @@
 #include "CustomClasses/StatPanel/StatPanel.h"
 
-StatPanel::StatPanel(CharType type, string root) {
+StatPanel::StatPanel(CharType type) {
 	//Set StatusPanel Image by type
 	switch (type) {
 	case CharType::PLAYER: {
-		statBackG = Sprite::create(root + "StatPanel/Crv_StatBar.png");
-		hpGauge = LoadingBar::create(root + "StatPanel/hpBar.png");
-		npGauge = LoadingBar::create(root + "StatPanel/npBar.png");
+		statBackG = Sprite::create("Images/StatPanel/Crv_StatBar.png");
+		hpGauge = LoadingBar::create("Images/StatPanel/hpBar.png");
+		npGauge = LoadingBar::create("Images/StatPanel/npBar.png");
 		hpGauge->setDirection(LoadingBar::Direction::RIGHT);
 		npGauge->setDirection(LoadingBar::Direction::LEFT);
 	}break;
 	case CharType::ENEMY: {
-		statBackG = Sprite::create(root + "StatPanel/Enemy_StatBar.png");
-		hpGauge = LoadingBar::create(root + "StatPanel/hpBar.png");
-		npGauge = LoadingBar::create(root + "StatPanel/npBar.png");
+		statBackG = Sprite::create("Images/StatPanel/Enemy_StatBar.png");
+		hpGauge = LoadingBar::create("Images/StatPanel/hpBar.png");
+		npGauge = LoadingBar::create("Images/StatPanel/npBar.png");
 		hpGauge->setDirection(LoadingBar::Direction::RIGHT);
 		npGauge->setDirection(LoadingBar::Direction::LEFT);
 	}break;
