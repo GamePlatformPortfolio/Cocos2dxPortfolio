@@ -103,7 +103,7 @@ bool BattleScene::init()
 
 
     epDisplay = new EpPanel(playerStone, player);
-    playerStone->GetSprite()->addChild(epDisplay->GetSprite());
+    this->addChild(epDisplay->GetSprite());
 
     // ep 창 설정
     btnBattle = MenuItemImage::create(

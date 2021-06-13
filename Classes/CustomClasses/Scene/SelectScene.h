@@ -22,6 +22,8 @@ private:
     void onExit();
     bool onTouchBegan(Touch* touch, Event* event);
 
+    void onTouchEnded(Touch* touch, Event* event);
+
     void SelectStageCallback(Ref* pSender);
     void StartDialog(float f);
 
@@ -29,6 +31,8 @@ private:
 
     Sprite* bgImg;
     Sprite* markerImg;
+    Sprite* stoneGuideImg;
+    Sprite* showGuideBtnImg;
     int bgmId;
 
     Rect stageSelectRect;

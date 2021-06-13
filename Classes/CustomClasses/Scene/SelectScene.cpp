@@ -29,10 +29,23 @@ bool SelectScene::init()
     this->addChild(bgImg);
 
     markerImg = Sprite::create("Images/ETC/marker.png");
-    markerImg->setPosition(Vec2::ZERO);
+    markerImg->setPosition(565 + 50, 375 + 50);
     markerImg->setContentSize(Size(100, 100));
     markerImg->setVisible(false);
     this->addChild(markerImg);
+
+    showGuideBtnImg = Sprite::create("Images/Button/Btn_ShowStone.png");
+    showGuideBtnImg->setPosition(595, 50);
+    showGuideBtnImg->setContentSize(Size(200, 50));
+    this->addChild(showGuideBtnImg);
+
+    stoneGuideImg = Sprite::create("Images/ETC/StoneGuide.png");
+    stoneGuideImg->setPosition(Director::getInstance()->getWinSize().width / 2,
+        Director::getInstance()->getWinSize().height / 2);
+    stoneGuideImg->setContentSize(Size(500, 300));
+    stoneGuideImg->setVisible(false);
+    this->addChild(stoneGuideImg);
+
 
     this->scheduleOnce(schedule_selector(SelectScene::StartDialog), 1.5f);
 
@@ -48,6 +61,7 @@ void SelectScene::onEnter()
     listener->setSwallowTouches(true);
 
     listener->onTouchBegan = CC_CALLBACK_2(SelectScene::onTouchBegan, this);
+    listener->onTouchEnded = CC_CALLBACK_2(SelectScene::onTouchEnded, this);
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
@@ -68,6 +82,8 @@ bool SelectScene::onTouchBegan(Touch* touch, Event* event)
 
     AudioEngine::play2d("Sounds/Touch.mp3");
 
+    cocos2d::log("%f, %f", touchPoint.x, touchPoint.y);
+
     bool isSelected = stageSelectRect.containsPoint(touchPoint);
     if (isSelected)
     {
@@ -78,8 +94,19 @@ bool SelectScene::onTouchBegan(Touch* touch, Event* event)
 
         SelectStageCallback(this);
     }
+    Rect showButtonRect = Rect(595 - 100, 50 - 25, 200, 50);
+    bool showStoneGuide = showButtonRect.containsPoint(touchPoint);
+    if (showStoneGuide)
+    {
+        stoneGuideImg->setVisible(true);
+    }
 
     return true;
+}
+
+void SelectScene::onTouchEnded(Touch* touch, Event* event)
+{
+    stoneGuideImg->setVisible(false);
 }
 
 void SelectScene::SelectStageCallback(Ref* pSender)

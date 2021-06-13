@@ -24,6 +24,7 @@ bool LoseScene::init()
         "Images/Button/Btn_PushNext.png",
         "Images/Button/Btn_Next.png",
         CC_CALLBACK_1(LoseScene::GoToPreviousBattle, this));
+    btnGoToPreviousBattle->setScale(Director::getInstance()->getWinSize().width / 720);
 
     menu = Menu::create(btnGoToPreviousBattle, NULL);
     int yPos = winSize.height / 4;

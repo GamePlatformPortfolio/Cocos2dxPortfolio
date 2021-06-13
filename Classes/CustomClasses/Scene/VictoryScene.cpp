@@ -22,6 +22,7 @@ bool VictoryScene::init()
         "Images/Button/Btn_PushMain.png",
         "Images/Button/Btn_Main.png",
         CC_CALLBACK_1(VictoryScene::GoToMain, this));
+    btnGoToMain->setScale(Director::getInstance()->getWinSize().width / 720);
 
     menu = Menu::create(btnGoToMain, NULL);
     int yPos = Director::getInstance()->getWinSize().height / 4;

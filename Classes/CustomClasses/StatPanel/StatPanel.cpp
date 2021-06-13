@@ -5,17 +5,22 @@ StatPanel::StatPanel(CharType type) {
 	switch (type) {
 	case CharType::PLAYER: {
 		statBackG = Sprite::create("Images/StatPanel/Crv_StatBar.png");
+		statBackG->setScale(Director::getInstance()->getWinSize().width / 720);
 		hpGauge = LoadingBar::create("Images/StatPanel/hpBar.png");
 		npGauge = LoadingBar::create("Images/StatPanel/npBar.png");
 		hpGauge->setDirection(LoadingBar::Direction::RIGHT);
 		npGauge->setDirection(LoadingBar::Direction::LEFT);
+
 	}break;
 	case CharType::ENEMY: {
 		statBackG = Sprite::create("Images/StatPanel/Enemy_StatBar.png");
+		statBackG->setScale(Director::getInstance()->getWinSize().width / 720);
 		hpGauge = LoadingBar::create("Images/StatPanel/hpBar.png");
 		npGauge = LoadingBar::create("Images/StatPanel/npBar.png");
 		hpGauge->setDirection(LoadingBar::Direction::RIGHT);
 		npGauge->setDirection(LoadingBar::Direction::LEFT);
+
+
 	}break;
 	default:	break;
 	}

@@ -14,6 +14,8 @@ bool StartScene::init()
 
     soundFadeTime = 5.0f;
 
+    AudioEngine::stopAll();
+
     bgmId = AudioEngine::play2d("Sounds/BGM_Start.mp3", true, 0.0f);
 
     bgImg = Sprite::create("Images/Background/BG_Start.png");
@@ -25,24 +27,29 @@ bool StartScene::init()
         Director::getInstance()->getWinSize().height));
     this->addChild(bgImg);
 
+    Director::getInstance()->setContentScaleFactor(bgImg->getContentSize().height / Director::getInstance()->getWinSize().height);
+
     auto item_1 = MenuItemImage::create(
         "Images/Button/Btn_Start.png",
         "Images/Button/Btn_PushStart.png",
         "Images/Button/Btn_Start.png",
         CC_CALLBACK_1(StartScene::startGameCallback, this));
-
+    
+    
     auto item_2 = MenuItemImage::create(
         "Images/Button/Btn_Exit.png",
         "Images/Button/Btn_PushExit.png",
         "Images/Button/Btn_Exit.png",
         CC_CALLBACK_1(StartScene::exitGameCallback, this));
-
+    
+    
     auto menu = Menu::create(item_1, item_2, NULL);
 
     menu->alignItemsVertically();
+   
     menu->setPositionY(Director::getInstance()->getWinSize().height / 4);
-    menu->setContentSize(Director::getInstance()->getWinSize());
     this->addChild(menu);
+
 
     scheduleUpdate();
     

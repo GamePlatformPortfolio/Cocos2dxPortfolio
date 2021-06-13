@@ -12,7 +12,8 @@ enum CharAnim
 	DODGE_ANIM,
 	DAMAGE_ANIM,
 	IDLE_ANIM,
-	DEAD_ANIM
+	DEAD_ANIM,
+	MOVE_ANIM
 };
 enum Direction
 { 
