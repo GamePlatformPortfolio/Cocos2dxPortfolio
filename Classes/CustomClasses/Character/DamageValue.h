@@ -3,10 +3,10 @@
 class DamageValue 
 {
 public:
-	int HpDamage(float num = 0);
-	int NpDamage(float num = 0);
+	float HpDamage(float num = 0);
+	float NpDamage(float num = 0);
 	DamageValue() noexcept { hpDamage = npDamage = 0; }
 private:
-	int hpDamage;
-	int npDamage;
+	float hpDamage;
+	float npDamage;
 };

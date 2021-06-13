@@ -60,6 +60,7 @@ private:
 
     StatPanel* stat;
 
+    int angle; int backangle;
     int maxHp;
     int currentHp;
     int maxNp;
@@ -67,7 +68,6 @@ private:
     int maxEp;
     int currentEp;
     int regenEp;
-    int angle; int backangle;
 
     string Sound_PA; //Sound of Physical Attack
     string Sound_MA; //Sound of Magic Attack

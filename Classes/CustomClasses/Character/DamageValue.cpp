@@ -1,6 +1,6 @@
 #include "CustomClasses/Character/DamageValue.h"
 
-int DamageValue::HpDamage(float num) 
+float DamageValue::HpDamage(float num) 
 {
 	if (num == 0) 
 		return hpDamage;
@@ -8,13 +8,10 @@ int DamageValue::HpDamage(float num)
 	hpDamage = num;
 	return hpDamage;
 }
-int DamageValue::NpDamage(float num) 
+float DamageValue::NpDamage(float num) 
 {
 	if (num == 0)
 		return npDamage;
-
-	if (num < 0) 
-		num = 1;
 
 	npDamage = num;
 	return npDamage;
