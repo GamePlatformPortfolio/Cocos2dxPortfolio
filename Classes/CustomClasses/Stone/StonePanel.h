@@ -1,8 +1,10 @@
 #pragma once
 
-#include "CustomClasses/Stone/Stone.h"
-#include "CustomClasses/EnumCollection/EnumCollection.h"
 #include "cocos2d.h"
+
+#include "CustomClasses/EnumCollection/EnumCollection.h"
+#include "CustomClasses/Stone/Stone.h"
+
 #include <list>
 #include <iostream>
 #include <cstdlib>
@@ -11,53 +13,60 @@
 using namespace cocos2d;
 using namespace std;
 
-const int maxAmount = 24;
-const int handAmount = 6;
-
 typedef vector<Stone*> StoneContainer;
 
-class StonePanel
+struct StonePanel
 {
 public:
-	Sprite* panelSprite;
+	const int maxCount = 24;
+	const int maxHandCount = 6;
+
+	StoneContainer::iterator it;
 
 	StoneContainer allStones;
 	StoneContainer handStones;
 	StoneContainer selectedStones;
 
-	Stone* currentStone;
-
-	StoneContainer::iterator it;
-
-	StonePanel(CharType targetType, string root, Vec2 pos, Size size);
+	StonePanel(CharType target, Vec2 pos, Size size);
 	~StonePanel();
 
-	void InitStones(Size size, string root);
+	void InitStones();
 
 	StoneType GetRandomType();
 	StoneTier GetRandomTier();
 	int GetRanValueInRange(int front, int rear);
+
+	Stone* GetCurrentStone();
+	Stone* PopStone();
 
 	void SelectStone(int index);
 	void UnSelectedStone(int index);
 
 	void HideAll();
 	void ShowAll();
-	Stone* GetCurrentStone();
-	Stone* PopStone();
 
 	void ShowCurrentStone();
 	void HideCurrentStone();
 
-	// Just for enemy
-	void PushRandomStones(int size);
-	void ClearSelectedStone(){selectedStones.clear();}
+	void PushRandomStones(int size); // Only for Enemy
+
+	void ClearSelectedStone() noexcept { selectedStones.clear(); }
 	void EndBattle();
 
-private:
-	CharType target;
+	Sprite* GetSprite();
 
-	bool firstInit;
+private:
 	const float actionTime = 0.5f;
+
+	Sprite* panelSprite;
+	Size panelSize;
+
+	int hOffset;
+	int vOffset;
+
+	Stone* currentStone;
+
+	CharType targetCharType;
+	bool alreadyInit;
 };
 

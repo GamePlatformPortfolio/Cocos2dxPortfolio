@@ -1,29 +1,26 @@
 #include "Stone.h"
-#include "CustomClasses/EnumCollection/EnumCollection.h"
 
-Stone::Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size)
+Stone::Stone(StoneType type, StoneTier tier, Vec2 pos, int size)
 {
 	this->type = type;
 	this->tier = tier;
 
-	//--------------스프라이트 생성 / 세팅
-	InitSprite(root);			
+	InitStoneSprite();
+	InitInformSprite();
+
 	sprite->setContentSize(Size(size, size));
 	sprite->setPosition(pos);
 
-	//--------------등급별 주사위값 세팅
 	SetPowerAndEpUsage();
 
-	//활성화/비활성화 상태 색 설정
-	this->power = power;
 	this->isSelect = false;
 
-	powerText = Label::createWithSystemFont(to_string(power), "", fontSize);
-	powerText->setColor(Color3B::BLACK);
-	powerText->setPosition(Vec2(size / 2, size / 2));
-	sprite->addChild(powerText);
+	powerLabel = Label::createWithSystemFont(to_string(powerValue), "", fontSize);
+	powerLabel->setColor(Color3B::BLACK);
+	powerLabel->setPosition(Vec2(size / 2, size / 2));
+	sprite->addChild(powerLabel);
 
-	ChangeState();
+	UpdateState();
 }
 
 Stone::~Stone()
@@ -33,7 +30,10 @@ Stone::~Stone()
 
 Sprite* Stone::GetSprite()
 {
-	return sprite;
+	if (sprite != nullptr)
+		return sprite;
+	else
+		return nullptr;
 }
 
 //Return Random Value between front and rear
@@ -45,7 +45,7 @@ int Stone::GetRanValueInRange(int front, int rear) {
 	return dis(gen);
 }
 
-void Stone::InitSprite(string root) 
+void Stone::InitStoneSprite()
 {
 	string filename = "Stn_";
 	//----------------------스톤 타입(물공, 마공, 방어, 회피)
@@ -61,32 +61,29 @@ void Stone::InitSprite(string root)
 	//------------최종 결과물 예시 : "Stn_PA_N.png"
 
 	//스프라이트 생성 / 세팅
-	sprite = Sprite::create(root + "Stone/" + filename);
-
-	InitInformSprite();
-
+	sprite = Sprite::create("Images/Stone/" + filename);
 }
 
 void Stone::SetPowerAndEpUsage() {
 	if (type == StoneType::GUARD) {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 4);
+			powerValue = GetRanValueInRange(1, 4);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(2, 6);
+			powerValue = GetRanValueInRange(2, 6);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(3, 6);
+			powerValue = GetRanValueInRange(3, 6);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(4, 8);
+			powerValue = GetRanValueInRange(4, 8);
 			epUsage = 4;
 			break;
 		}
@@ -95,22 +92,22 @@ void Stone::SetPowerAndEpUsage() {
 	else if (type == StoneType::DODGE) {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 6);
+			powerValue = GetRanValueInRange(1, 6);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(2, 6);
+			powerValue = GetRanValueInRange(2, 6);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(2, 8);
+			powerValue = GetRanValueInRange(2, 8);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(4, 8);
+			powerValue = GetRanValueInRange(4, 8);
 			epUsage = 5;
 			break;
 		}
@@ -119,22 +116,22 @@ void Stone::SetPowerAndEpUsage() {
 	else {
 		switch (tier) {
 		case StoneTier::NORMAL: {
-			power = GetRanValueInRange(1, 5);
+			powerValue = GetRanValueInRange(1, 5);
 			epUsage = 1;
 			break;
 		}
 		case StoneTier::RARE: {
-			power = GetRanValueInRange(1, 8);
+			powerValue = GetRanValueInRange(1, 8);
 			epUsage = 2;
 			break;
 		}
 		case StoneTier::UNIQUE: {
-			power = GetRanValueInRange(3, 8);
+			powerValue = GetRanValueInRange(3, 8);
 			epUsage = 3;
 			break;
 		}
 		case StoneTier::EPIC: {
-			power = GetRanValueInRange(5, 9);
+			powerValue = GetRanValueInRange(5, 9);
 			epUsage = 4;
 			break;
 		}
@@ -142,27 +139,24 @@ void Stone::SetPowerAndEpUsage() {
 	}
 }
 
-void Stone::ChangeState()
+void Stone::UpdateState()
 {
 	if (isSelect)
-	{
-		sprite->setColor(selectedColor);
-	}
+		sprite->setColor(selectedColor);	
 	else
-	{
-		sprite->setColor(color);
-	}
+		sprite->setColor(normalColor);	
 }
 
 void Stone::ChangeOnlyColor()
 {
-	sprite->setColor(color);
+	sprite->setColor(normalColor);
 }
 
 void Stone::Select(bool value)
 {
 	isSelect = value;
-	ChangeState();
+
+	UpdateState();
 }
 
 bool Stone::GetSelect()
@@ -172,10 +166,11 @@ bool Stone::GetSelect()
 
 int Stone::GetPower()
 {
-	return power;
+	return powerValue;
 }
 
-int Stone::GetEpUsage() {
+int Stone::GetEpUsage() 
+{
 	return epUsage;
 }
 
@@ -188,8 +183,10 @@ void Stone::Show()
 {
 	auto fadeIn = FadeIn::create(actionTime);
 
+	sprite->setVisible(true);
+
 	sprite->runAction(fadeIn->clone());
-	powerText->runAction(fadeIn->clone());
+	powerLabel->runAction(fadeIn->clone());
 }
 
 void Stone::Hide()
@@ -197,80 +194,77 @@ void Stone::Hide()
 	auto fadeOut = FadeOut::create(actionTime);
 
 	sprite->runAction(fadeOut->clone());
-	powerText->runAction(fadeOut->clone());
+	powerLabel->runAction(fadeOut->clone());
 }
 
 void Stone::ShowPower()
 {
 	auto fadeIn = FadeIn::create(actionTime);
 
-	powerText->runAction(fadeIn);
+	powerLabel->runAction(fadeIn);
 }
 
 void Stone::HidePower()
 {
 	auto fadeOut = FadeOut::create(actionTime);
 
-	powerText->runAction(fadeOut);
+	powerLabel->runAction(fadeOut);
 }
 
 void Stone::InitInformSprite()
 {
-	string name = "";
+	string filename = "";
 
 	switch (type)
 	{
 	case PHYSICAL_ATTACK:
-		name = "PA";
+		filename = "PA";
 		break;
 	case MAGIC_ATTACK:
-		name = "MA";
+		filename = "MA";
 		break;
 	case GUARD:
-		name = "GD";
+		filename = "GD";
 		break;
 	case DODGE:
-		name = "DG";
+		filename = "DG";
 		break;
 	}
 
-	name += "UI_";
+	filename += "UI_";
 
 	switch (tier)
 	{
 	case NORMAL:
-		name += "N";
+		filename += "N";
 		break;
 	case RARE:
-		name += "R";
+		filename += "R";
 		break;
 	case UNIQUE:
-		name += "U";
+		filename += "U";
 		break;
 	case EPIC:
-		name += "E";
+		filename += "E";
 		break;
 	}
 
-	name += ".png";
+	filename += ".png";
 
-	informSprite = Sprite::create("Images/Value/" + name);
+	informSprite = Sprite::create("Images/Value/" + filename);
 	informSprite->setVisible(false);
+
+
+
 
 	sprite->addChild(informSprite);
-
-
-	informSprite->setPosition(Vec2(0, 75));
+	informSprite->setPosition(25, 100);
 }
 
-void Stone::ShowInform()
+void Stone::VisibleInform(bool value)
 {
-	informSprite->setVisible(true);
-}
-
-void Stone::HideInform()
-{
-	informSprite->setVisible(false);
+	informSprite->setVisible(value);
+	informSprite->setGlobalZOrder(1);
 }
 
 

@@ -1,6 +1,9 @@
 #pragma once
+
 #include "cocos2d.h"
+
 #include "CustomClasses/EnumCollection/EnumCollection.h"
+
 #include <random>
 
 using namespace cocos2d;
@@ -9,25 +12,22 @@ using namespace std;
 class Stone
 {
 public:
-	Stone(StoneType type, StoneTier tier, string root, Vec2 pos, int size);
+	Stone(StoneType type, StoneTier tier, Vec2 pos, int size);
 	~Stone();
-
-	void SetPowerAndEpUsage();
-	void InitSprite(string root);
-	
-	Sprite* GetSprite();
 
 	int GetRanValueInRange(int, int);
 
-	void ChangeState();
-	void ChangeOnlyColor();
+	void SetPowerAndEpUsage();
+	void InitStoneSprite();
+
+	void InitInformSprite();
+	void VisibleInform(bool value);
 
 	void Select(bool value);
 	bool GetSelect();
 
-	int	GetPower();
-	StoneType GetType();
-	int GetEpUsage();
+	void UpdateState();
+	void ChangeOnlyColor();
 
 	void Show();
 	void Hide();
@@ -35,30 +35,27 @@ public:
 	void ShowPower();
 	void HidePower();
 
-	void InitInformSprite();
-	void ShowInform();
-	void HideInform();
+	Sprite* GetSprite();
+	StoneType GetType();
+	int	GetPower();
+	int GetEpUsage();
 
-#pragma region PRIVATE
 private:
-	Sprite* sprite;
-	Label* powerText;
-
-	Sprite* informSprite;
-
-	const Color3B color = Color3B::WHITE;
+	const Color3B normalColor = Color3B::WHITE;
 	const Color3B selectedColor = Color3B::GRAY;
+
+	const int fontSize = 24;
+	const float actionTime = 0.2f;
+
+	Sprite* sprite;
+	Sprite* informSprite;
+	Label* powerLabel;
 
 	StoneType type;
 	StoneTier tier;
 
 	int epUsage;
-
-	int power;
-	const int fontSize = 24;
-	const float actionTime = 0.2f;
-
+	int powerValue;
 	bool isSelect;
-#pragma endregion
 };
 
