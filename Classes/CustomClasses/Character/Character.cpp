@@ -25,6 +25,7 @@ Character::Character(CharType type, Vec2 pos, Size size)
         case CharType::PLAYER:
         {
             dir = Direction::RIGHT;
+            angle = -10; backangle = 10;
             Sound_PA = "Sounds/Craver_PA.mp3";
             Sound_MA = "Sounds/Craver_MA.mp3";
             break;
@@ -32,6 +33,7 @@ Character::Character(CharType type, Vec2 pos, Size size)
         case CharType::ENEMY:
         {
             dir = Direction::LEFT;
+            angle = 10; backangle = -10;
             Sound_PA = "Sounds/Guardian_PA.mp3";
             Sound_MA = "Sounds/Guardian_MA.mp3";
             break;
@@ -117,8 +119,14 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 
 			Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
-			auto moveBack   = MoveTo::create(actionTime, originPos - moveDistance);
+			auto moveBack   = MoveTo::create(0.25f, originPos - moveDistance);
 			auto moveOrigin = MoveTo::create(actionTime, originPos);
+
+            auto Blink = Blink::create(0.08f, 1);
+            auto hitred = TintTo::create(0.08f, 255, 0, 0);
+            auto hitbakcred = TintTo::create(0.08f, 255, 255, 255);
+            auto RotatesBy = RotateBy::create(0.08f, angle);
+            auto RotatesBack = RotateBy::create(0.08f, backangle);
 
 			auto doIdle = CallFunc::create([=]()->void 
                 {
@@ -135,7 +143,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
                 DelayTime::create(actionTime),
                 doAction,
                 EaseBackInOut::create(moveBack),
-                DelayTime::create(0.2f),
+                DelayTime::create(0.2f), Blink, RotatesBy, hitred, hitbakcred, RotatesBack,
                 EaseBackInOut::create(moveOrigin),
                 doIdle, nullptr);
 
@@ -153,6 +161,7 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
     auto doAction   = CallFunc::create([=]()->void { MatchImgSize((CharAnim)curStone->GetType()); });
     auto doMove     = CallFunc::create([=]()->void { MatchImgSize(CharAnim::MOVE_ANIM); });
     auto doIdle     = CallFunc::create([=]()->void { MatchImgSize(CharAnim::IDLE_ANIM); });
+    auto domagic = CallFunc::create([=]()->void { MatchImgSize(CharAnim::MAGIC_ATTACK_ANIM_READY); });
 
 	Vec2 moveDistance = Vec2((int)dir * 100, 0);
 
@@ -176,10 +185,9 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 	case StoneType::MAGIC_ATTACK: 
     {
 		AudioEngine::play2d(Sound_MA);
-		moveSeq = Sequence::create(
+		moveSeq = Sequence::create(domagic, DelayTime::create(0.2f),
             doAction,
-            DelayTime::create(actionTime),
-            DelayTime::create(0.2f),
+            DelayTime::create(actionTime), 
             doIdle,
             DelayTime::create(actionTime), nullptr);
 	}break;
@@ -245,6 +253,7 @@ string Character::GetSpriteName(CharType type, CharAnim anim)
     case IDLE_ANIM: targetAnim = "Standing"; break;
     case DEAD_ANIM: targetAnim = "Die"; break;
     case MOVE_ANIM: targetAnim = "Move"; break;
+    case MAGIC_ATTACK_ANIM_READY: targetAnim = "MA_01";  break;
     } 
 
     return targetName + targetAnim + ".png";

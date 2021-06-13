@@ -13,7 +13,8 @@ enum CharAnim
 	DAMAGE_ANIM,
 	IDLE_ANIM,
 	DEAD_ANIM,
-	MOVE_ANIM
+	MOVE_ANIM,
+	MAGIC_ATTACK_ANIM_READY
 };
 enum Direction
 { 
