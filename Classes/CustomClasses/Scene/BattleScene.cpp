@@ -386,42 +386,43 @@ void BattleScene::ActivateCurStone(Stone* playerStone, Stone* enemyStone)
     player->Action(target, playerStone, damage);
 }
 
-void BattleScene::SetDamageValue(Stone* attacker, Stone* receiver, DamageValue* damage) 
+void BattleScene::SetDamageValue(Stone* attacker, Stone* receiver, DamageValue* damage)
 {
 	if (attacker->GetType() == StoneType::PHYSICAL_ATTACK || attacker->GetType() == StoneType::MAGIC_ATTACK) {
 		if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
-			damage->HpDamage(attacker->GetPower()); damage->NpDamage(damage->HpDamage() / 2);
+			damage->HpDamage(attacker->GetPower());
+			damage->NpDamage(damage->HpDamage() / 2);
 		}
 		else if (receiver->GetType() == StoneType::GUARD) {
 			damage->HpDamage(attacker->GetPower() - receiver->GetPower());
-            damage->NpDamage((float)(damage->HpDamage() / 2));
+			damage->NpDamage(damage->HpDamage() / 2.0);
 		}
 		else if (receiver->GetType() == StoneType::DODGE) {
-            damage->HpDamage(attacker->GetPower());
-            damage->NpDamage(damage->HpDamage() / 2);
+			damage->HpDamage(attacker->GetPower());
+			damage->NpDamage(damage->HpDamage() / 2.0);
 		}
 	}
 	else if (attacker->GetType() == StoneType::GUARD) {
 		if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
-			damage->NpDamage(receiver->GetPower() / 2);
+			damage->NpDamage(receiver->GetPower() / 2.0);
 		}
 		else if (receiver->GetType() == StoneType::GUARD) {
-            damage->NpDamage((attacker->GetPower() - receiver->GetPower()) / 2);
+			damage->NpDamage((attacker->GetPower() - receiver->GetPower()) / 2.0);
 		}
 		else if (receiver->GetType() == StoneType::DODGE) {
-            damage->NpDamage(attacker->GetPower());
+			damage->NpDamage(attacker->GetPower());
 		}
 	}
 	else if (attacker->GetType() == StoneType::DODGE) {
-        if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
-            damage->NpDamage((attacker->GetPower() * -1));
-        }
+		if (receiver->GetType() == StoneType::PHYSICAL_ATTACK || receiver->GetType() == StoneType::MAGIC_ATTACK) {
+			damage->NpDamage((attacker->GetPower() * -1));
+		}
 		else if (receiver->GetType() == StoneType::GUARD) {
-            damage->NpDamage((attacker->GetPower() * -1));
+			damage->NpDamage((attacker->GetPower() * -1));
 		}
-        else {}
-		}
+		else {}
 	}
+}
 
 CharType BattleScene::SetTarget(Stone* playerStone, Stone* enemyStone) 
 {

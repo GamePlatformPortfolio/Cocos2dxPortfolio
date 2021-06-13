@@ -86,22 +86,17 @@ void Character::Show()
 
 void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage)
 {
-	if (type == targetType) 
-    {
+	if (type == targetType)  {
         CallFunc* doAction;
 
-		if (damage->NpDamage() > 0) 
-        {
-            if (currentHp - damage->HpDamage() > 0)
-            {
+		if (damage->NpDamage() > 0)   {
+            if (currentHp - damage->HpDamage() > 0)  {
                 doAction = CallFunc::create([=]()->void {MatchImgSize(CharAnim::DAMAGE_ANIM); });
             }
-            else if (currentHp - damage->HpDamage() <= 0)
-            {
+            else if (currentHp - damage->HpDamage() <= 0) {
                 doAction = CallFunc::create([=]()->void {MatchImgSize(CharAnim::DEAD_ANIM);  });
 
-                switch (type)
-                {
+                switch (type)  {
                 case CharType::PLAYER:
                     sprite->setContentSize(Size(300, 300));
                     isLose = true;
@@ -209,16 +204,12 @@ void Character::Action(CharType targetType, Stone* curStone, DamageValue* damage
 }
 
 void Character::SufferDamage(DamageValue* damage){
-#pragma region Animation
-
-#pragma endregion
-#pragma region DamageAffection
+    damage->NpDamage(ceil(damage->NpDamage()));
     currentHp -= damage->HpDamage(0);
     currentNp -= damage->NpDamage(0);
 
 	stat->SetHpGauge(maxHp, currentHp);
 	stat->SetNpGauge(maxNp, currentNp);
-#pragma endregion
 }
 
 string Character::GetSpriteName(CharType type, CharAnim anim)
